@@ -1,5 +1,5 @@
 import Picker from './picker';
 
-export {
+export default {
   Picker,
 };

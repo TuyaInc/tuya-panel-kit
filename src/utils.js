@@ -5,6 +5,9 @@ const numberToFixed = (n, c = 2) => {
   return n < 0 ? `-${s}` : s;
 };
 
+const isNumerical = obj => (Object.prototype.toString.call(obj) === '[object Number]');
+
+
 module.exports = {
   parseJSON(str) {
     let rst;
@@ -41,4 +44,18 @@ module.exports = {
     const zone = offset > 0 ? `-${strHour}` : `+${strHour}`;
     return zone;
   },
+
+  camelize(str) {
+    if (isNumerical(str)) {
+      return str;
+    }
+    // eslint-disable-next-line
+    str = str.replace(
+      /[\-_\s]+(.)?/g,
+      (match, chr) => chr ? chr.toUpperCase() : '',
+    );
+    // Ensure 1st char is always lowercase
+    return str.substr(0, 1).toLowerCase() + str.substr(1);
+  },
+
 };
