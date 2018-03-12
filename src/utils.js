@@ -1,4 +1,4 @@
-const numberToFixed = (number, 2) => {
+const numberToFixed = (n, c = 2) => {
   let s = `${Math.abs(n)}`;
   s = '0'.repeat(c) + s;
   s = s.slice(-c);
