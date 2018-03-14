@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { requireNativeComponent, View, ViewPropTypes } from 'react-native';
 
-var WheelPickerView = requireNativeComponent('WheelPicker', WheelPicker);
+var WheelPickerView = requireNativeComponent('TYRCTWheelViewManager', WheelPicker);
 
 class WheelPicker extends Component {
   constructor(props) {
