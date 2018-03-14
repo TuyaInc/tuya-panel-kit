@@ -14,40 +14,25 @@ class WheelPicker extends Component {
   }
 
   onItemSelected(event: Event) {
-    if (!this.props.onItemSelected) {
+    if (!this.props.onValueChange) {
       return;
     }
-    this.props.onItemSelected(event.nativeEvent);
-  }
-
-  componentDidMount() {
-    this.setState({ selectedItemPosition: this.props.selectedItemPosition })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ selectedItemPosition: nextProps.selectedItemPosition })
+    this.props.onValueChange(event.nativeEvent);
   }
 
   render() {
     return (
       <WheelPickerView
-        onChange={this.onItemSelected}
-        data={this.props.data}
-        isCurved={this.props.isCurved}
-        isCyclic={this.props.isCyclic}
-        isAtmospheric={this.props.isAtmospheric}
-        selectedItemTextColor={this.props.selectedItemTextColor}
-        itemSpace={this.props.itemSpace}
-        visibleItemCount={this.props.visibleItemCount}
-        renderIndicator={this.props.renderIndicator}
-        indicatorColor={this.props.indicatorColor}
-        isCurtain={this.props.isCurtain}
-        curtainColor={this.props.curtainColor}
+        items={this.props.items}
         itemTextColor={this.props.itemTextColor}
-        itemTextSize={this.props.itemTextSize}
-        itemTextFontFamily={this.props.itemTextFontFamily}
-        selectedItemPosition={this.state.selectedItemPosition}
-        backgroundColor={this.props.backgroundColor}
+        selectedItemTextColor={this.props.selectedItemTextColor}
+        dividerColor={this.props.dividerColor}
+        visibleItemCount={this.props.visibleItemCount}
+        itemAlign={this.props.itemAlign}
+        selectedIndex={this.props.selectedValue}
+        textSize={this.props.textSize}
+        loop={this.props.loop}
+        onItemSelected={this.onItemSelected}
       />
     );
   }
@@ -55,23 +40,16 @@ class WheelPicker extends Component {
 
 WheelPicker.propTypes = {
   ...ViewPropTypes,
-  onItemSelected: PropTypes.func,
-  data: PropTypes.array,
-  isCurved: PropTypes.bool,
-  isCyclic: PropTypes.bool,
-  isAtmospheric: PropTypes.bool,
-  selectedItemTextColor: PropTypes.string,
-  itemSpace: PropTypes.number,
-  visibleItemCount: PropTypes.number,
-  renderIndicator: PropTypes.bool,
-  indicatorColor: PropTypes.string,
-  isCurtain: PropTypes.bool,
-  curtainColor: PropTypes.string,
+  items: PropTypes.array,
   itemTextColor: PropTypes.string,
-  itemTextSize: PropTypes.number,
-  itemTextFontFamily: PropTypes.string,
-  selectedItemPosition: PropTypes.number,
-  backgroundColor: PropTypes.string,
+  selectedItemTextColor: PropTypes.string,
+  dividerColor: PropTypes.string,
+  visibleItemCount: PropTypes.number,
+  itemAlign: PropTypes.string,
+  selectedIndex: PropTypes.number,
+  textSize: PropTypes.number,
+  loop: PropTypes.bool,
+  onItemSelected: PropTypes.func,
 };
 
 export default WheelPicker;
