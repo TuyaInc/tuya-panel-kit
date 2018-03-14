@@ -23,6 +23,7 @@ class WheelPicker extends Component {
   render() {
     return (
       <WheelPickerView
+        style={this.props.style}
         items={this.props.items}
         itemTextColor={this.props.itemTextColor}
         selectedItemTextColor={this.props.selectedItemTextColor}
