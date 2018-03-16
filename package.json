@@ -1,7 +1,8 @@
 {
   "name": "@tuya-rn/tuya-native-kit",
   "version": "1.0.0",
-  "description": "",
+  "private": false,
+  "description": "tuya-react-kit, is a wrapper of native api & module",
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
