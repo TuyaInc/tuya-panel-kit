@@ -203,11 +203,8 @@ var AppDeviceEventEmitter = {};
 
 
 if (NativeModules) {
-  // _TYAppNative = NativeModules.TYRCTPublicModule;
-  // _TYDeviceDevice = NativeModules.TYRCTDeviceModule;
-
-  _TYAppNative = NativeModules.TYRCTPublicManager;
-  _TYDeviceDevice = NativeModules.TYRCTPanelManager;
+  _TYAppNative = NativeModules.TYRCTPublicModule || NativeModules.TYRCTPublicManager;
+  _TYDeviceDevice = NativeModules.TYRCTDeviceModule || NativeModules.TYRCTPanelManager;
 
 
   TYApi = Object.assign({}, TYApi, {
