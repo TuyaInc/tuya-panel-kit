@@ -523,6 +523,14 @@ if (NativeModules) {
       return [];
     };
 
+    Device.isShareDevice = () => {
+      if (TYApi.devInfo) {
+        return !!TYApi.devInfo.isShare;
+      }
+      console.log('-----未初始化,isShareDevice');
+      return true;
+    };
+
     Device.getDpSchema = (code) => {
       if (TYApi.devInfo) {
         if (code) {
@@ -544,7 +552,7 @@ if (NativeModules) {
         }
         return TYApi.devInfo.state;
       }
-      if (TYNative.checkDpExist(dp)) {
+      if (Device.checkDpExist(dp)) {
         if (/^\d+$/.test(dp)) {
           dp = Device.getDpCodeById(dp);
         }
@@ -824,6 +832,24 @@ if (NativeModules) {
     };
 
 
+    /**
+     * 是否是wifi设备
+     * 返回值: undefined | bool
+     * 当 undefined，app不支持该接口
+     */
+    Device.isWifiDevice = () => {
+      if (!TYApi.devInfo) {
+        throw new Error('Device uninitialized');
+      }
+      const { pcc } = TYApi.devInfo;
+      if (pcc !== undefined) {
+        return pcc.length === 0;
+      }
+      return pcc;
+
+    };
+
+
     // =====================================================================
     // ============================= Device end ============================
     // =====================================================================
@@ -931,7 +957,7 @@ if (NativeModules) {
       () => TYApi.mobileInfo,
     );
 
-    // 展示loading，有问题
+    // 展示loading，有问题 （在ios中，在modal的上层显示dialog，会导致生命周期异常无法控制）
     App.showLoading = (title) => {
       _TYAppNative.showLoading({
         title: title || '',

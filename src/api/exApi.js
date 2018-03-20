@@ -1,7 +1,10 @@
+import { Platform, AppState, AppStateIOS } from 'react-native';
 import moment from 'moment';
 import TYNative from './api';
 import Strings from '../i18n';
 import Utils from '../utils';
+
+const AppLife = Platform.OS === 'ios' ? AppStateIOS : AppState;
 
 // =====================================================================
 // ============================== Cloud ================================
@@ -178,22 +181,56 @@ TYNative.getPm25HistoryCurve = () => {
 
 
 /**
+ * 获取某个dp点历史数据
+ * @param dpCode
+ * @param dayNum
+ */
+TYNative.getDpHistoryData = (dpCode, dayNum = 5) => new Promise((resolve, reject) => {
+  const dpId = TYNative.getDpIdByCode(dpCode);
+  const { productId, devId } = TYNative.devInfo;
+
+  TYNative.apiRNRequest(
+    {
+      a: 'm.smart.history.curve',
+      postData: {
+        dataType: 1,
+        productId,
+        devId,
+        dayNum,
+        dpId,
+      },
+      v: '1.0',
+    },
+      d => {
+        const data = Platform.OS === 'android' ? JSON.parse(d) : d;
+        resolve(data);
+      },
+      reject
+    );
+});
+
+
+/**
  * [getTimerList description]
  * @return {[type]} [description]
  * 获取所有定时
+ * 支持群组定时
  */
 TYNative.getTimerList = () => {
   return new Promise((resolve, reject) => {
+    const { groupId, devId } = TYNative.devInfo;
+
     TYNative.apiRNRequest({
-      a: 's.m.linkage.timer.category.list.all',
+      a: 'tuya.m.timer.all.list',
       postData: {
-        devId: TYNative.devInfo.devId,
+        type: groupId ? 'device_group' : 'device',
+        bizId: groupId || devId,
       },
-      v: '1.0',
-    }, (d) => {
+      v: '2.0',
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -205,20 +242,23 @@ TYNative.getTimerList = () => {
  * @param  {[type]} category [description]
  * @return {[type]}          [description]
  * 获取某个分类下的定时
+ * 支持群组定时
  */
-TYNative.getCategoryTimerList = () => {
+TYNative.getCategoryTimerList = category => {
   return new Promise((resolve, reject) => {
+    const { groupId, devId } = TYNative.devInfo;
     TYNative.apiRNRequest({
-      a: 's.m.linkage.timer.category.group.list',
+      a: 'tuya.m.timer.group.list',
       postData: {
+        type: groupId ? 'device_group' : 'device',
+        bizId: groupId || devId,
         category,
-        devId: TYNative.devInfo.devId,
       },
       v: '2.0',
-    }, (d) => {
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -233,10 +273,10 @@ TYNative.getSunsetRise = () => {
         devId: TYNative.devInfo.devId,
       },
       v: '1.0',
-    }, (d) => {
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -249,23 +289,25 @@ TYNative.getSunsetRise = () => {
  * @param {[type]} loops    [description]
  * @param {[type]} instruct [description]
  * 添加定时
+ * 支持群组定时
  */
 TYNative.addTimer = (category, loops, instruct) => {
   return new Promise((resolve, reject) => {
     TYNative.apiRNRequest({
-      a: 's.m.linkage.timer.category.group.add',
+      a: 'tuya.m.timer.group.add',
       postData: {
-        category,
-        devId: TYNative.devInfo.devId,
-        loops,
+        type: groupId ? 'device_group' : 'device',
+        bizId: groupId || devId,
         timeZone: Utils.timezone(),
+        category,
+        loops,
         instruct,
       },
-      v: '1.0',
-    }, (d) => {
+      v: '3.0',
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -280,24 +322,28 @@ TYNative.addTimer = (category, loops, instruct) => {
  * @param  {[type]} instruct [description]
  * @return {[type]}          [description]
  * 更新定时
+ * 支持群组定时
  */
 TYNative.updateTimer = (groupId, category, loops, instruct) => {
   return new Promise((resolve, reject) => {
+    const { groupId: devGroupId, devId } = TYNative.devInfo;
+
     TYNative.apiRNRequest({
-      a: 's.m.linkage.timer.category.group.update',
+      a: 'tuya.m.timer.group.update',
       postData: {
-        groupId,
-        category,
-        devId: TYNative.devInfo.devId,
-        loops,
+        type: devGroupId ? 'device_group' : 'device',
+        bizId: devGroupId || devId,
         timeZone: Utils.timezone(),
+        loops,
+        category,
         instruct,
+        groupId,
       },
-      v: '1.0',
-    }, (d) => {
+      v: '3.0',
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -310,21 +356,25 @@ TYNative.updateTimer = (groupId, category, loops, instruct) => {
  * @param  {[type]} category [description]
  * @return {[type]}          [description]
  * 删除定时
+ * 支持群组定时
  */
 TYNative.removeTimer = (groupId, category) => {
   return new Promise((resolve, reject) => {
+    const { groupId: devGroupId, devId } = TYNative.devInfo;
+
     TYNative.apiRNRequest({
-      a: 's.m.linkage.timer.category.group.remove',
+      a: 'tuya.m.timer.group.remove',
       postData: {
+        type: groupId ? 'device_group' : 'device',
+        bizId: devGroupId || devId,
         groupId,
         category,
-        devId: TYNative.devInfo.devId,
       },
-      v: '1.0',
-    }, (d) => {
+      v: '2.0',
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -338,22 +388,26 @@ TYNative.removeTimer = (groupId, category) => {
  * @param  {[type]} status   [description]
  * @return {[type]}          [description]
  * 更新某个组定时的状态
+ * 支持群组定时
  */
 TYNative.updateStatus = (category, groupId, status) => {
   return new Promise((resolve, reject) => {
+    const { groupId: devGroupId, devId } = TYNative.devInfo;
+
     TYNative.apiRNRequest({
-      a: 's.m.linkage.timer.category.group.status',
+      a: 'tuya.m.timer.group.status.update',
       postData: {
+        type: devGroupId ? 'device_group' : 'device',
+        bizId: devGroupId || devId,
         category,
         groupId,
         status,
-        devId: TYNative.devInfo.devId,
       },
-      v: '1.0',
-    }, (d) => {
+      v: '2.0',
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -405,7 +459,7 @@ TYNative.getDPLastTimer = (dpId, inDay) => {
         }),
       },
       v: '1.0',
-    }, (d) => {
+    }, d => {
       let data = Utils.parseJSON(d);
       if (typeof inDay === 'number') {
         const lastDate = moment(`${data.date},${data.time},${data.timeZone}`, 'YYYYMMDD,HH:mm,ZZ');
@@ -418,7 +472,7 @@ TYNative.getDPLastTimer = (dpId, inDay) => {
         }
       }
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -428,7 +482,7 @@ TYNative.getDPLastTimer = (dpId, inDay) => {
 TYNative.getDPsLastTimer = (dpCodes) => {
   return Promise.all(
     dpCodes.map(dpCode => TYNative.getDPLastTimer(TYNative.getDpIdByCode(dpCode))),
-  ).then((d) => {
+  ).then(d => {
     const data = {};
     // eslint-disable-next-line
     for (const i in dpCodes) {
@@ -436,6 +490,37 @@ TYNative.getDPsLastTimer = (dpCodes) => {
     }
     return data;
   }, () => ({}));
+};
+
+
+TYNative.getDeviceCloudData = key => {
+  return new Promise((resolve, reject) => {
+    TYNative.getDevProperty(
+      d => {
+        if (typeof d !== 'undefined') {
+          let data = d;
+          if (key) {
+            data = typeof d[key] !== 'undefined' ? d[key] : {};
+          }
+          if (typeof data === 'string') data = JSON.parse(data);
+          resolve(data);
+        } else reject({});
+      },
+      () => reject({})
+    );
+  });
+};
+
+
+TYNative.saveDeviceCloudData = (key, data) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const jsonString = typeof data === 'object' ? JSON.stringify(data) : data;
+      TYNative.setDevProperty(key, jsonString, resolve, reject);
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
 
@@ -482,10 +567,10 @@ TYNative.getDpsInfos = () => {
         devId: TYNative.devInfo.devId,
       },
       v: '2.0',
-    }, (d) => {
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -531,10 +616,10 @@ TYNative.updateDpName = (dpName, name) => {
         name,
       },
       v: '1.0',
-    }, (d) => {
+    }, d => {
       const data = Utils.parseJSON(d);
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
@@ -598,17 +683,197 @@ TYNative.getDpState = (dpCode) => {
         gwId: TYNative.devInfo.devId,
       },
       v: '2.0',
-    }, (d) => {
+    }, d => {
       let data = Utils.parseJSON(d);
       const dpId = TYNative.getDpIdByCode(dpCode);
       if (dpCode) {
         data = data[dpId] || {};
       }
       resolve(data);
-    }, (e) => {
+    }, e => {
       reject(e);
     });
   });
 };
+
+
+/**
+|--------------------------------------------------
+| 获取设备第三方数据
+| @param dateDate 数据日期时间戳，单位秒，当前按天来查询
+|--------------------------------------------------
+*/
+TYNative.getThirdData = dateDate => {
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest(
+      {
+        a: 'tuya.m.device.third.data.get',
+        postData: {
+          devId: TYNative.devInfo.devId,
+          dateDate,
+        },
+        v: '1.0',
+      },
+      d => {
+        const data = Utils.parseJSON(d);
+        // console.log('data', data);
+        resolve(data);
+      },
+      e => {
+        reject(e);
+      }
+    );
+  });
+};
+
+
+/**
+|--------------------------------------------------
+| 批量查询设备第三方数据
+| @param 查询起始时间
+| @param 查询终止时间
+|--------------------------------------------------
+*/
+TYNative.queryThirdData = (startDate, endDate) => {
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest(
+      {
+        a: 'tuya.m.device.third.data.query',
+        postData: {
+          devId: TYNative.devInfo.devId,
+          startDate,
+          endDate,
+        },
+        v: '1.0',
+      },
+      d => {
+        const data = Utils.parseJSON(d);
+        // console.log('data', data);
+        resolve(data);
+      },
+      e => {
+        reject(e);
+      }
+    );
+  });
+};
+
+
+TYNative.addAppChangeHandle = fn => {
+  AppLife.addEventListener('change', fn);
+};
+
+TYNative.removeAppChangeHandle = fn => {
+  AppLife.removeEventListener('change', fn);
+};
+
+
+// 变态的ZigBee，需要设备返回后才能继续下一步的操作
+TYNative.putDpDataOneByOne = (() => {
+  const putDpData = TYNative.putDpData.bind(TYNative);
+  const cmdS = [];
+  let disabled = false;
+  let timerId;
+
+  const send = cmd => {
+    const promiseHandle = {};
+    const promise = new Promise((resolve, reject) => {
+      promiseHandle.resolve = resolve;
+      promiseHandle.reject = reject;
+    });
+
+    promiseHandle.command = cmd;
+    promiseHandle.promise = promise;
+
+    if (!cmdS.length) {
+      cmdS.push(promiseHandle);
+    } else {
+      const cmdKeysNew = Object.keys(cmd);
+      let hasInQueue = false;
+      let index = 0;
+      // eslint-disable-next-line
+      for (const cmdItem of cmdS) {
+        const oldCmd = cmdItem.command;
+        const cmdKeysOld = Object.keys(oldCmd);
+        if (cmdKeysNew.length === cmdKeysOld.length) {
+          hasInQueue = true;
+          // eslint-disable-next-line
+          for (const item of cmdKeysNew) {
+            if (cmdKeysOld.indexOf(item) === -1) {
+              hasInQueue = false;
+              break;
+            } else if (cmd[item] !== oldCmd[item]) {
+              hasInQueue = false;
+              break;
+            }
+          }
+          if (hasInQueue && cmdS.length > 1) {
+            cmdS.splice(index, 1);
+            cmdS.push(promiseHandle);
+            break;
+          }
+        }
+        index += 1;
+      }
+      if (!hasInQueue) {
+        cmdS.push(promiseHandle);
+      }
+    }
+    if (disabled) {
+      return cmdS.length === 1 ? cmdS[0].promise : promise;
+    }
+    const toDo = () => {
+      disabled = true;
+      let cmdItem = cmdS[0];
+      let { resolve, reject, command, promise: prom } = cmdItem;
+      // setTimeout(() => {
+      finalSend(resolve, reject, command);
+      // }, 3000);
+      return prom.finally(d => {
+        cmdItem = null;
+        resolve = null;
+        reject = null;
+        command = null;
+        prom = null;
+        cmdS.splice(0, 1);
+        if (!cmdS.length) {
+          disabled = false;
+          return d;
+        }
+        toDo();
+        return d;
+      });
+    };
+
+    return toDo();
+  };
+
+  const finalSend = (resolve, reject, d) => {
+    const handle = dps => {
+      const dpCodes = Object.keys(dps);
+      // eslint-disable-next-line
+      for (const code of dpCodes) {
+        if (d[code] !== undefined && d[code] === dps[code]) {
+          clearTimeout(timerId);
+          TYNative.off('dpDataChange', handle);
+          resolve({
+            success: true,
+          });
+          break;
+        }
+      }
+    };
+    TYNative.on('dpDataChange', handle);
+    timerId = setTimeout(() => {
+      reject({
+        success: false,
+      });
+    }, 8000);
+    putDpData(d).catch(reject);
+  };
+
+  return send;
+})();
+
 
 export default TYNative;
