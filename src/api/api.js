@@ -799,6 +799,22 @@ if (NativeModules) {
       return false;
     };
 
+
+    /**
+     * 获取蓝牙状态
+     * 返回值: bool类型
+     */
+    Device.getBleManagerState = () => {
+      return new Promise((resolve, reject) => {
+        (_TYDeviceDevice.getBleManagerState || function() { reject(null); })(d => {
+          if (d) {
+            return resolve(d.state);
+          }
+          reject(null);
+        });
+      });
+    };
+
     /**
      * 是否是mesh wifi设备
      * 返回值: undefined | bool
@@ -1041,21 +1057,6 @@ if (NativeModules) {
           },
           reject,
         );
-      });
-    };
-
-    /**
-     * 获取蓝牙状态
-     * 返回值: bool类型
-     */
-    App.getBleManagerState = () => {
-      return new Promise((resolve, reject) => {
-        (_TYAppNative.getBleManagerState || function() { reject(null); })((d) => {
-          if (d) {
-            return resolve(d.state);
-          }
-          reject(null);
-        });
       });
     };
 
