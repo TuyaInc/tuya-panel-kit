@@ -6,7 +6,6 @@ import {
   AlertIOS,
 } from 'react-native';
 
-import moment from 'moment';
 import * as Utils from '../utils';
 
 const EventEmitter = require('events').EventEmitter;
@@ -446,7 +445,7 @@ if (NativeModules) {
 
     Device.initDevice = () => Promise.all([
       new Promise((resolve) => Device.getDevInfo({}, d => resolve(d))),
-      Device.getNetworkType(),
+      App.getNetworkType(),
     ]).then((d) => {
       let networkState = d[1].type;
       if (typeof networkState === 'undefined') networkState = d[1];
@@ -481,8 +480,8 @@ if (NativeModules) {
 
     // 获取客户端网络状态
     // {type: "WIFI|GPRS|NONE"}
-    Device.getNetworkType = () => new Promise((resolve, reject) => {
-      _TYDeviceDevice.getNetworkType((t) => {
+    App.getNetworkType = () => new Promise((resolve, reject) => {
+      _TYAppNative.getNetworkType((t) => {
         resolve(t);
       });
     });
@@ -799,22 +798,6 @@ if (NativeModules) {
       return false;
     };
 
-
-    /**
-     * 获取蓝牙状态
-     * 返回值: bool类型
-     */
-    Device.getBleManagerState = () => {
-      return new Promise((resolve, reject) => {
-        (_TYDeviceDevice.getBleManagerState || function() { reject(null); })(d => {
-          if (d) {
-            return resolve(d.state);
-          }
-          reject(null);
-        });
-      });
-    };
-
     /**
      * 是否是mesh wifi设备
      * 返回值: undefined | bool
@@ -1044,13 +1027,13 @@ if (NativeModules) {
       }
     };
 
-    App.showDeviceMenu = function() {
-      return _TYAppNative.showDeviceMenu();
+    Device.showDeviceMenu = function() {
+      return _TYDeviceDevice.showDeviceMenu();
     };
 
-    App.apiRequest = function(postData) {
+    Device.apiRequest = function(postData) {
       return new Promise((resolve, reject) => {
-        _TYAppNative.apiRequest(postData,
+        _TYDeviceDevice.apiRequest(postData,
           (d) => {
             const data = typeof d === 'object' ? d : JSON.parse(d);
             resolve({ ...data });
@@ -1061,21 +1044,36 @@ if (NativeModules) {
     };
 
     /**
+     * 获取蓝牙状态
+     * 返回值: bool类型
+     */
+    Device.getBleManagerState = () => {
+      return new Promise((resolve, reject) => {
+        (_TYDeviceDevice.getBleManagerState || function() { reject(null); })((d) => {
+          if (d) {
+            return resolve(d.state);
+          }
+          reject(null);
+        });
+      });
+    };
+
+    /**
      * wifi网络状态监测
      */
-    App.gotoDeviceWifiNetworkMonitor = _TYAppNative.gotoDeviceWifiNetworkMonitor || function() {};
+    Device.gotoDeviceWifiNetworkMonitor = _TYDeviceDevice.gotoDeviceWifiNetworkMonitor || function() {};
 
     /**
      * 申请蓝牙权限
      */
-    App.gotoBlePermissions = _TYAppNative.gotoBlePermissions || function() {};
+    Device.gotoBlePermissions = _TYDeviceDevice.gotoBlePermissions || function() {};
 
     /**
      * 删除设备
      */
-    App.deleteDeviceInfo = () => {
+    Device.deleteDeviceInfo = () => {
       return new Promise((resolve, reject) => {
-        (_TYAppNative.deleteDeviceInfo || function() { reject(); })(resolve, reject);
+        (_TYDeviceDevice.deleteDeviceInfo || function() { reject(); })(resolve, reject);
       });
     };
     // =====================================================================
