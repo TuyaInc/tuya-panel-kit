@@ -17,7 +17,7 @@ class WheelPicker extends Component {
     if (!this.props.onValueChange) {
       return;
     }
-    this.props.onValueChange(event.nativeEvent);
+    this.props.onValueChange(event);
   }
 
   render() {
@@ -33,7 +33,7 @@ class WheelPicker extends Component {
         selectedIndex={this.props.selectedValue}
         textSize={this.props.textSize}
         loop={this.props.loop}
-        onItemSelected={this.onItemSelected}
+        onChange={this.onItemSelected}
       />
     );
   }
@@ -50,7 +50,7 @@ WheelPicker.propTypes = {
   selectedIndex: PropTypes.number,
   textSize: PropTypes.number,
   loop: PropTypes.bool,
-  onItemSelected: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 export default WheelPicker;
