@@ -80,6 +80,20 @@
 
 
 
+### xAxis Attributes 
+
+|       Option        |               Description                | default |  type   |        acceptable values        |
+| :-----------------: | :--------------------------------------: | :-----: | :-----: | :-----------------------------: |
+|       enable        |                   是否显示                   |  false  | Boolean |                -                |
+|      position       | Legend 的内容超出图表边界之外，是否创建一个新的行。 请注意，这会降低性能和仅适用于” legend 位于图表下面”的情况 |    -    | Boolean |                -                |
+| horizontalAlignment |                  设置图例位置                  |    -    | String  |   `LEFT` `CENTER`    `RIGHT`    |
+|  verticalAlignment  |                  设置图例位置                  |    -    | String  |     `TOP` `CENTER` `BOTTOM`     |
+|     orientation     |               图例显示方式，水平或垂直               |    -    | String  |     `HORIZONTAL` `VERTICAL`     |
+|      direction      |           图例显示方向，先图例再文字或先文字再图例           |    -    | String  | `LEFT_TO_RIGHT` `RIGHT_TO_LEFT` |
+|        data         |        如果 data 有数据，优先处理 data，详见下表        |    -    |  Array  |                -                |
+
+
+
 ### Events
 
 |     Option      |   Description    |

@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, requireNativeComponent } from 'react-native';
+import {
+  View,
+  requireNativeComponent,
+  Platform,
+  UIManager,
+  NativeModules,
+  ReactNative,
+} from 'react-native';
 
 class LineChart extends Component {
-  constructor(props) {
-    super(props)
-    this.onValueSelect = this.onValueSelect.bind(this)
-    this.onScale = this.onScale.bind(this)
-    this.onTranslate = this.onTranslate.bind(this)
-    this.onNothingSelect = this.onNothingSelect.bind(this)
-  }
   // 点击选择 value 触发事件
   onValueSelect (event) {
-    // arr: [ series, group, index ]
-    // position: { x, y };
     if (!this.props.onValueSelect) {
       return;
     }
@@ -40,28 +38,52 @@ class LineChart extends Component {
     }
     this.props.onNothingSelect(event);
   }
+  // 清空图表数据
+  clear() {
+    if (Platform.OS === 'ios') {
+      const manager = NativeModules.TYRCLineChartViewManager;
+      manager.clear();
+    } else {
+      const r = this.ref;
+      UIManager.dispatchViewManagerCommand(
+        ReactNative.findNodeHandle(r),
+        UIManager.TYRCLineChartView.Commands.clear,
+        null
+      );
+    }
+  }
+  // 刷新图表数据
+  refresh() {
+    if (Platform.OS === 'ios') {
+      const manager = NativeModules.TYRCLineChartViewManager;
+      manager.refresh();
+    } else {
+      const r = this.ref.getRef();
+      UIManager.dispatchViewManagerCommand(
+        ReactNative.findNodeHandle(r),
+        UIManager.TYRCLineChartView.Commands.refresh,
+        null
+      );
+    }
+  }
   render() {
     const {
       width,
       height,
+      bgColor,
       title,
       xAxis,
       yAxis,
       legend,
       group,
       data,
-      modal
     } = this.props;
 
     return (
-      <View style={{
-        width,
-        height,
-        position: 'relative'
-      }}>
+      <View>
         <TYRCLineChart
-          ref={(ref) => this.ref = ref}
-          style={{ width, height }}
+          ref={ref => this.ref = ref}
+          backgroundColor={bgColor}
           width={width}
           height={height}
           title={title}
@@ -70,38 +92,34 @@ class LineChart extends Component {
           legend={legend}
           group={group}
           data={data}
-          onValueSelect={this.onValueSelect}
-          onScale={this.onScale}
-          onTranslate={this.onTranslate}
-          onNothingSelect={this.onNothingSelect}
+          onValueSelect={event => this.onValueSelect(event)}
+          onScale={event => this.onScale(event)}
+          onTranslate={event => this.onTranslate(event)}
+          onNothingSelect={event => this.onNothingSelect(event)}
         />
-        {modal}
       </View>
     );
-  }
-  getRef() {
-    return this.ref;
   }
 }
 
 LineChart.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
-  title: PropTypes.object,
-  xAxis: PropTypes.object,
-  yAxis: PropTypes.object,
-  legend: PropTypes.object,
-  data: PropTypes.array,
-  group: PropTypes.object,
-  modal: PropTypes.element,
-  onValueSelect: PropTypes.func,
-  onScale: PropTypes.func,
-  onTranslate: PropTypes.func,
-  onNothingSelect: PropTypes.func,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  bgColor: PropTypes.string.isRequired,
+  title: PropTypes.object.isRequired,
+  xAxis: PropTypes.object.isRequired,
+  yAxis: PropTypes.object.isRequired,
+  legend: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
+  group: PropTypes.object.isRequired,
+  onValueSelect: PropTypes.func.isRequired,
+  onScale: PropTypes.func.isRequired,
+  onTranslate: PropTypes.func.isRequired,
+  onNothingSelect: PropTypes.func.isRequired,
   ...View.propTypes,
 };
 
-var TYRCLineChart = requireNativeComponent('TYRCLineChartView', {
+const TYRCLineChart = requireNativeComponent('TYRCLineChartView', {
   name: 'TYRCLineChartView',
   propTypes: LineChart.propTypes,
 });
