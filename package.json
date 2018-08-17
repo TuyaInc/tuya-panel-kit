@@ -1,11 +1,14 @@
 {
   "name": "@tuya-rn/tuya-native-kit",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "private": false,
   "description": "tuya-react-kit, is a wrapper of native api & module",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags",
+    "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags",
+    "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags"
   },
   "dependencies": {
     "prop-types": "^15.6.1",
@@ -17,5 +20,8 @@
     "fri3nds<chenglong@tuya.com>",
     "cris<wanghuan@tuya.com>"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "generate-changelog": "^1.7.1"
+  }
 }
