@@ -101,7 +101,7 @@ const formatDevJSON = (json) => {
     json.schema[code] = define;
     delete define.property;
   }
-  delete json.dps;
+  // delete json.dps;
 
   if (json.panelConfig) {
     panelConfig = Object.assign({}, json.panelConfig);
@@ -444,7 +444,7 @@ if (NativeModules) {
     });
 
     Device.initDevice = () => Promise.all([
-      new Promise((resolve) => Device.getDevInfo({}, d => resolve(d))),
+      new Promise((resolve) => _TYAppNative.getDevInfo({}, d => resolve(d))),
       App.getNetworkType(),
     ]).then((d) => {
       let networkState = d[1].type;
@@ -484,17 +484,6 @@ if (NativeModules) {
       _TYAppNative.getNetworkType((t) => {
         resolve(t);
       });
-    });
-
-    // 获取设备信息
-    Device.getDevInfo = () => new Promise((resolve) => {
-      if (TYApi.devInfo) {
-        resolve(TYApi.devInfo);
-      } else {
-        Device.initDevice().then(d => {
-          resolve(d);
-        });
-      }
     });
 
     Device.getDpIdByCode = (code) => {
