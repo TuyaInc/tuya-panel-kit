@@ -444,7 +444,7 @@ if (NativeModules) {
     });
 
     Device.initDevice = () => Promise.all([
-      new Promise((resolve) => _TYAppNative.getDevInfo({}, d => resolve(d))),
+      new Promise((resolve) => _TYDeviceDevice.getDevInfo({}, d => resolve(d))),
       App.getNetworkType(),
     ]).then((d) => {
       let networkState = d[1].type;
