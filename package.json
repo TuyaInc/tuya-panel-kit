@@ -1,6 +1,6 @@
 {
   "name": "@tuya-rn/tuya-native-kit",
-  "version": "1.0.9-rc.1",
+  "version": "1.0.10",
   "private": false,
   "description": "tuya-react-kit, is a wrapper of native api & module",
   "main": "./src/index.js",
