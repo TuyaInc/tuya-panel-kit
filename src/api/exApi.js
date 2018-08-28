@@ -17,7 +17,7 @@ TYNative.getPanelConfig = () => {
     TYNative.apiRNRequest({
       a: 'tuya.m.device.ui.panel.config.get',
       postData: {
-        gwId: TYNative.devInfo.gwId,
+        gwId: TYNative.devInfo.devId,
         devId: TYNative.devInfo.devId,
         uiPhase: 'preview',
       },
@@ -44,7 +44,7 @@ TYNative.getDeviceInfo = () => {
     TYNative.apiRNRequest({
       a: 's.m.dev.list',
       postData: {
-        gwId: TYNative.devInfo.gwId,
+        gwId: TYNative.devInfo.devId,
       },
       v: '2.0',
     }, (d) => {
@@ -91,7 +91,7 @@ TYNative.getWeatherQuality = () => {
     TYNative.apiRNRequest({
       a: 's.m.dev.build.in.dp.get',
       postData: {
-        gwId: TYNative.devInfo.gwId,
+        gwId: TYNative.devInfo.devId,
         devId: TYNative.devInfo.devId,
         codes: [
           'city.id',
