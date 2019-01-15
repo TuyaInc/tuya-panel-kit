@@ -110,6 +110,7 @@ LineChart.propTypes = {
   xAxis: PropTypes.object.isRequired,
   yAxis: PropTypes.object.isRequired,
   legend: PropTypes.object.isRequired,
+  markType: PropTypes.number.isRequired,
   data: PropTypes.array.isRequired,
   group: PropTypes.object.isRequired,
   onValueSelect: PropTypes.func.isRequired,
