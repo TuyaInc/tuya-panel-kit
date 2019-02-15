@@ -614,12 +614,15 @@ if (NativeModules) {
         //   clearTimeout(TIMEOUT_ID);
         //   resolve(d);
         // });
-
+        const error = d => {
+          Event.emit('message', d);
+        };
+        if (Device.isMeshDevice()) {
+          return _TYDeviceDevice.getDpDataFromMeshDevice({ dpIds: [dpId] }, error);
+        }
         _TYDeviceDevice.getDpDataFromDevice({
           dpId,
         }, loop, (d) => {
-          // clearTimeout(TIMEOUT_ID);
-          // reject(d);
           Event.emit('message', d);
         });
       });
