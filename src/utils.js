@@ -58,4 +58,15 @@ module.exports = {
     return str.substr(0, 1).toLowerCase() + str.substr(1);
   },
 
+  formatReturnValue = val => {
+    if (({}).toString.call(val) === '[object String]') {
+      return Utils.JsonUtils.parseJSON(val);
+    }
+
+    if (({}).toString.call(val) === '[object Object]') {
+      return val;
+    }
+
+    return val;
+  };
 };

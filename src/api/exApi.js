@@ -875,5 +875,64 @@ TYNative.putDpDataOneByOne = (() => {
   return send;
 })();
 
+TYNative.signApi = ({biz = 'lock', type = 'image', isIE = false, uploadFileName }) => {
+  const d = { biz, type, isIE, uploadFileName };
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest({
+      a: 'tuya.m.storage.post.sign',
+      postData: d,
+      v: '1.0',
+    }, (res) => {
+      resolve(Utils.formatReturnValue(res));
+    }, (error) => {
+      reject(Utils.formatReturnValue(error));
+    });
+  });
+}
+
+TYNative.uploadFile = ({ AWSAccessKeyId, ossAccessId, policy, signature, host, key, file }) => {
+  return new Promise((resolve, reject) => {
+    const isUndefined = param => {
+      return param == undefined;
+    }
+    if (
+      (isUndefined(AWSAccessKeyId) && isUndefined(ossAccessId)) ||
+      isUndefined(policy) ||
+      isUndefined(signature) ||
+      isUndefined(host) ||
+      isUndefined(key) ||
+      isUndefined(file)
+    ) {
+      reject({ message: 'missing parameter' });
+    }
+    const formData = new global.FormData();
+    // 外区
+    if (AWSAccessKeyId) {
+      formData.append('AWSAccessKeyId', AWSAccessKeyId);
+    }
+    // 中国区
+    if (ossAccessId) {
+      formData.append('OSSAccessKeyId', ossAccessId);
+    }
+
+    formData.append('key', key);
+    formData.append('policy', policy);
+    formData.append('signature', signature);
+    formData.append('file', file);
+
+    const config = {
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
+    };
+
+    global.fetch(host, {
+      method: 'POST',
+      headers: config,
+      body: formData
+    }).then(res => res.text())
+      .then(() => resolve({ key, ...file }))
+      .catch(e => reject(e));
+  });
+}
 
 export default TYNative;
