@@ -7,30 +7,32 @@ const numberToFixed = (n, c = 2) => {
 
 const isNumerical = obj => (Object.prototype.toString.call(obj) === '[object Number]');
 
+const parseJSON = str => {
+  let rst;
+  if (str && ({}).toString.call(str) === '[object String]') {
+    // 当JSON字符串解析
+    try {
+      rst = JSON.parse(str);
+    } catch (e) {
+      // 出错，用eval继续解析JSON字符串
+      try {
+        // eslint-disable-next-line
+        rst = eval(`(${str})`);
+      } catch (e2) {
+        // 当成普通字符串
+        rst = str;
+      }
+    }
+  } else {
+    rst = str || {};
+  }
+
+  return rst;
+};
+
 
 module.exports = {
-  parseJSON(str) {
-    let rst;
-    if (str && ({}).toString.call(str) === '[object String]') {
-      // 当JSON字符串解析
-      try {
-        rst = JSON.parse(str);
-      } catch (e) {
-        // 出错，用eval继续解析JSON字符串
-        try {
-          // eslint-disable-next-line
-          rst = eval(`(${str})`);
-        } catch (e2) {
-          // 当成普通字符串
-          rst = str;
-        }
-      }
-    } else {
-      rst = str || {};
-    }
-
-    return rst;
-  },
+  parseJSON,
 
   timezone() {
     const d = new Date();
@@ -58,9 +60,9 @@ module.exports = {
     return str.substr(0, 1).toLowerCase() + str.substr(1);
   },
 
-  formatReturnValue = val => {
+  formatReturnValue(val) {
     if (({}).toString.call(val) === '[object String]') {
-      return Utils.JsonUtils.parseJSON(val);
+      return parseJSON(val);
     }
 
     if (({}).toString.call(val) === '[object Object]') {
@@ -68,5 +70,5 @@ module.exports = {
     }
 
     return val;
-  };
+  },
 };
