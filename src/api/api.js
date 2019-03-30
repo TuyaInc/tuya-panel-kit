@@ -5,8 +5,8 @@ import {
   Platform,
   AlertIOS,
 } from 'react-native';
-
 import * as Utils from '../utils';
+import internalEventType from './internalEventType';
 
 const EventEmitter = require('events').EventEmitter;
 
@@ -394,6 +394,10 @@ if (NativeModules) {
           };
 
           for (const p in state) {
+            if (internalEventType.indexOf(p) !== -1) {
+              console.warn(`DP Code can not be one of [${internalEventType}]`);
+              continue;
+            }
             Event.emit(p, state);
           }
         }
