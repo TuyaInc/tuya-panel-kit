@@ -170,16 +170,25 @@ const formatUiConfig = devInfo => {
 
   if (!devInfo.panelConfig || !devInfo.panelConfig.bic) return uiConfig;
 
-  const bic = devInfo.panelConfig.bic;
+  const { bic, fun } = devInfo.panelConfig;
   // let bic = typeof bicN === 'string' ? Utils.parseJSON(bicN) : bicN;
 
   //eslint-disable-next-line
-  for (const i in bic) {
-    const key = Utils.camelize(`panel_${bic[i].code}`);
-    if (bic[i].selected === true) {
-      uiConfig[key] = bic[i].value ? parseJSON(bic[i].value) : true;
-    } else {
-      uiConfig[key] = false;
+  if (bic) {
+    for (const i in bic) {
+      const key = Utils.camelize(`panel_${bic[i].code}`);
+      if (bic[i].selected === true) {
+        uiConfig[key] = bic[i].value ? parseJSON(bic[i].value) : true;
+      } else {
+        uiConfig[key] = false;
+      }
+    }
+  }
+
+  if (fun) {
+    for (const i in fun) {
+      const key = Utils.camelize(`panel_fun_${i}`);
+      uiConfig[key] = fun[i];
     }
   }
 
