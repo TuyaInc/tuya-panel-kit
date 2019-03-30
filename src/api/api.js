@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   NativeModules,
   DeviceEventEmitter,
@@ -409,7 +410,7 @@ if (NativeModules) {
 
         if (!isEmptyObj(state)) {
           TYApi.devInfo.state = {
-            ...a.devInfo.state,
+            ...TYApi.devInfo.state,
             ...state,
           };
           Event.emit(dp, state);
