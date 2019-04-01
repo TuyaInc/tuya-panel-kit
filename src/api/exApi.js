@@ -293,6 +293,7 @@ TYNative.getSunsetRise = () => {
  */
 TYNative.addTimer = (category, loops, instruct) => {
   return new Promise((resolve, reject) => {
+    const { groupId, devId } = TYNative.devInfo;
     TYNative.apiRNRequest({
       a: 'tuya.m.timer.group.add',
       postData: {
@@ -448,16 +449,19 @@ TYNative.updateCategoryStatus = (category, status) => {
  */
 TYNative.getDPLastTimer = (dpId, inDay) => {
   return new Promise((resolve, reject) => {
+    const { devId, groupId } = TYNative.devInfo;
+    const instruct = Object.assign({ dpId }, groupId
+      ? { groupId }
+      : { devId },
+    );
+    const postData = {
+      type: groupId ? 'device_group' : 'device',
+      bizId: devId,
+      instruct: JSON.stringify(instruct),
+    };
     TYNative.apiRNRequest({
       a: 's.m.linkage.timer.nearest.get',
-      postData: {
-        type: 'device',
-        bizId: TYNative.devInfo.devId,
-        instruct: JSON.stringify({
-          devId: TYNative.devInfo.devId,
-          dpId,
-        }),
-      },
+      postData,
       v: '1.0',
     }, d => {
       let data = Utils.parseJSON(d);
@@ -478,7 +482,6 @@ TYNative.getDPLastTimer = (dpId, inDay) => {
   });
 };
 
-
 TYNative.getDPsLastTimer = (dpCodes) => {
   return Promise.all(
     dpCodes.map(dpCode => TYNative.getDPLastTimer(TYNative.getDpIdByCode(dpCode))),
@@ -492,6 +495,35 @@ TYNative.getDPsLastTimer = (dpCodes) => {
   }, () => ({}));
 };
 
+/**
+ * 批量获取多个DP点最近的定时
+ * @param {Array} dpCodes
+ */
+TYNative.getDPsLastTimers = (dpCodes) => {
+  return new Promise((resolve, reject) => {
+    const { devId, groupId } = TYNative.devInfo;
+    const dpIds = dpCodes.map(code => TYNative.getDpIdByCode(code)).join(',');
+    const instruct = Object.assign({ dpIds }, groupId
+      ? { groupId }
+      : { devId },
+    );
+    const postData = {
+      type: groupId ? 'device_group' : 'device',
+      bizId: devId,
+      instruct: JSON.stringify(instruct),
+    };
+    TYNative.apiRNRequest({
+      a: 's.m.linkage.timer.nearest.bat.get',
+      postData,
+      v: '1.0',
+    }, d => {
+      const data = Utils.parseJSON(d);
+      resolve(data);
+    }, e => {
+      reject(e);
+    });
+  });
+};
 
 TYNative.getDeviceCloudData = key => {
   return new Promise((resolve, reject) => {
@@ -576,18 +608,37 @@ TYNative.getDpsInfos = () => {
   });
 };
 
+/**
+ * 获取群组设备所有dp点信息
+ */
+TYNative.getGroupDpsInfos = () => {
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest({
+      a: 's.m.dev.group.dp.get',
+      postData: {
+        groupId: TYNative.devInfo.groupId,
+      },
+      v: '1.0',
+    }, d => {
+      const data = Utils.parseJSON(d);
+      resolve(data);
+    }, e => {
+      reject(e);
+    });
+  });
+};
 
 /**
  * 获取指定dp点的名称
  */
-TYNative.getDpName = (dpName) => {
+TYNative.getDpName = (dpCode) => {
   return new Promise((resolve, reject) => {
     TYNative.getDpsInfos().then(
       (d) => {
         let result = '';
         // eslint-disable-next-line
         for (const dp of d) {
-          if (dp.code === dpName) {
+          if (dp.code === dpCode) {
             result = dp.name;
           }
         }
@@ -599,20 +650,19 @@ TYNative.getDpName = (dpName) => {
   });
 };
 
-
 /**
  * 更新设备dp点名称
- * @param  {string} dpName
+ * @param  {string} dpCode
  * @param  {string} name
  */
-TYNative.updateDpName = (dpName, name) => {
+TYNative.updateDpName = (dpCode, name) => {
   return new Promise((resolve, reject) => {
     TYNative.apiRNRequest({
       a: 's.m.dev.dp.name.update',
       postData: {
         gwId: TYNative.devInfo.devId,
         devId: TYNative.devInfo.devId,
-        dpId: TYNative.getDpIdByCode(dpName),
+        dpId: TYNative.getDpIdByCode(dpCode),
         name,
       },
       v: '1.0',
@@ -625,6 +675,29 @@ TYNative.updateDpName = (dpName, name) => {
   });
 };
 
+/**
+ * 更新群组设备dp点名称
+ * @param  {string} dpCode
+ * @param  {string} name
+ */
+TYNative.updateGroupDpName = (dpCode, name) => {
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest({
+      a: 'tuya.m.group.dpname.update',
+      postData: {
+        groupId: TYNative.devInfo.groupId,
+        dpId: +TYNative.getDpIdByCode(dpCode),
+        name,
+      },
+      v: '1.0',
+    }, d => {
+      const data = Utils.parseJSON(d);
+      resolve(data);
+    }, e => {
+      reject(e);
+    });
+  });
+};
 
 // 获取设备告警列表
 TYNative.getDevAlarmList = () => {

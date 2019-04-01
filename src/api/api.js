@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   NativeModules,
   DeviceEventEmitter,
@@ -5,8 +6,8 @@ import {
   Platform,
   AlertIOS,
 } from 'react-native';
-
 import * as Utils from '../utils';
+import internalEventType from './internalEventType';
 
 const EventEmitter = require('events').EventEmitter;
 
@@ -170,16 +171,25 @@ const formatUiConfig = devInfo => {
 
   if (!devInfo.panelConfig || !devInfo.panelConfig.bic) return uiConfig;
 
-  const bic = devInfo.panelConfig.bic;
+  const { bic, fun } = devInfo.panelConfig;
   // let bic = typeof bicN === 'string' ? Utils.parseJSON(bicN) : bicN;
 
   //eslint-disable-next-line
-  for (const i in bic) {
-    const key = Utils.camelize(`panel_${bic[i].code}`);
-    if (bic[i].selected === true) {
-      uiConfig[key] = bic[i].value ? parseJSON(bic[i].value) : true;
-    } else {
-      uiConfig[key] = false;
+  if (bic) {
+    for (const i in bic) {
+      const key = Utils.camelize(`panel_${bic[i].code}`);
+      if (bic[i].selected === true) {
+        uiConfig[key] = bic[i].value ? parseJSON(bic[i].value) : true;
+      } else {
+        uiConfig[key] = false;
+      }
+    }
+  }
+
+  if (fun) {
+    for (const i in fun) {
+      const key = Utils.camelize(`panel_fun_${i}`);
+      uiConfig[key] = fun[i];
     }
   }
 
@@ -385,6 +395,10 @@ if (NativeModules) {
           };
 
           for (const p in state) {
+            if (internalEventType.indexOf(p) !== -1) {
+              console.warn(`DP Code can not be one of [${internalEventType}]`);
+              continue;
+            }
             Event.emit(p, state);
           }
         }
@@ -396,7 +410,7 @@ if (NativeModules) {
 
         if (!isEmptyObj(state)) {
           TYApi.devInfo.state = {
-            ...a.devInfo.state,
+            ...TYApi.devInfo.state,
             ...state,
           };
           Event.emit(dp, state);
