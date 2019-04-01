@@ -38,7 +38,8 @@
   },
   "author": [
     "fri3nds<chenglong@tuya.com>",
-    "cris<wanghuan@tuya.com>"
+    "cris<wanghuan@tuya.com>",
+    "toki<liuyt@tuya.com>"
   ],
   "license": "ISC",
   "devDependencies": {
