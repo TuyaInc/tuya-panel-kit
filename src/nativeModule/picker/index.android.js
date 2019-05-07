@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { requireNativeComponent, View, ViewPropTypes } from 'react-native';
+import { requireNativeComponent, ViewPropTypes } from 'react-native';
 
-var WheelPickerView = requireNativeComponent('TYRCTWheelViewManager', WheelPicker);
+const WheelPickerView = requireNativeComponent('TYRCTWheelViewManager', WheelPicker);
 
 class WheelPicker extends Component {
   constructor(props) {
     super(props);
     this.onItemSelected = this.onItemSelected.bind(this);
-    this.state = {
-      selectedItemPosition: 0
-    }
   }
 
-  onItemSelected(event: Event) {
+  onItemSelected(event) {
     if (!this.props.onValueChange) {
       return;
     }
@@ -23,6 +20,7 @@ class WheelPicker extends Component {
   render() {
     return (
       <WheelPickerView
+        accessibilityLabel="PickerView"
         style={this.props.style}
         items={this.props.items}
         itemTextColor={this.props.itemTextColor}
