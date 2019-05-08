@@ -20,7 +20,7 @@ class WheelPicker extends Component {
   render() {
     return (
       <WheelPickerView
-        accessibilityLabel="PickerView"
+        accessibilityLabel={this.props.accessibilityLabel || 'PickerView'}
         style={this.props.style}
         items={this.props.items}
         itemTextColor={this.props.itemTextColor}
