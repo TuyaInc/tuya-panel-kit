@@ -288,12 +288,13 @@ TYNative.getSunsetRise = () => {
  * @param {[type]} category [description]
  * @param {[type]} loops    [description]
  * @param {[type]} instruct [description]
+ * @param {Object} devInfo [设备信息]
  * 添加定时
  * 支持群组定时
  */
-TYNative.addTimer = (category, loops, instruct) => {
+TYNative.addTimer = (category, loops, instruct, devInfo) => {
   return new Promise((resolve, reject) => {
-    const { groupId, devId } = TYNative.devInfo;
+    const { groupId, devId } = devInfo || TYNative.devInfo;
     TYNative.apiRNRequest({
       a: 'tuya.m.timer.group.add',
       postData: {
@@ -317,17 +318,18 @@ TYNative.addTimer = (category, loops, instruct) => {
 
 /**
  * [updateTimer description]
- * @param  {[type]} groupId  [description]
- * @param  {[type]} category [description]
- * @param  {[type]} loops    [description]
- * @param  {[type]} instruct [description]
+ * @param {[type]} groupId  [description]
+ * @param {[type]} category [description]
+ * @param {[type]} loops    [description]
+ * @param {[type]} instruct [description]
+ * @param {Object} devInfo [设备信息]
  * @return {[type]}          [description]
  * 更新定时
  * 支持群组定时
  */
-TYNative.updateTimer = (groupId, category, loops, instruct) => {
+TYNative.updateTimer = (groupId, category, loops, instruct, devInfo) => {
   return new Promise((resolve, reject) => {
-    const { groupId: devGroupId, devId } = TYNative.devInfo;
+    const { groupId: devGroupId, devId } = devInfo || TYNative.devInfo;
 
     TYNative.apiRNRequest({
       a: 'tuya.m.timer.group.update',
@@ -353,15 +355,16 @@ TYNative.updateTimer = (groupId, category, loops, instruct) => {
 
 /**
  * [removeTimer description]
- * @param  {[type]} groupId  [description]
- * @param  {[type]} category [description]
+ * @param {[type]} groupId  [description]
+ * @param {[type]} category [description]
+ * @param {Object} devInfo [设备信息]
  * @return {[type]}          [description]
  * 删除定时
  * 支持群组定时
  */
-TYNative.removeTimer = (groupId, category) => {
+TYNative.removeTimer = (groupId, category, devInfo) => {
   return new Promise((resolve, reject) => {
-    const { groupId: devGroupId, devId } = TYNative.devInfo;
+    const { groupId: devGroupId, devId } = devInfo || TYNative.devInfo;
 
     TYNative.apiRNRequest({
       a: 'tuya.m.timer.group.remove',
@@ -384,17 +387,17 @@ TYNative.removeTimer = (groupId, category) => {
 
 /**
  * [updateStatus description]
- * @param  {[type]} category [description]
- * @param  {[type]} groupId  [description]
- * @param  {[type]} status   [description]
+ * @param {[type]} category [description]
+ * @param {[type]} groupId  [description]
+ * @param {[type]} status   [description]
+ * @param {Object} devInfo [设备信息]
  * @return {[type]}          [description]
  * 更新某个组定时的状态
  * 支持群组定时
  */
-TYNative.updateStatus = (category, groupId, status) => {
+TYNative.updateStatus = (category, groupId, status, devInfo) => {
   return new Promise((resolve, reject) => {
-    const { groupId: devGroupId, devId } = TYNative.devInfo;
-
+    const { groupId: devGroupId, devId } = devInfo || TYNative.devInfo;
     TYNative.apiRNRequest({
       a: 'tuya.m.timer.group.status.update',
       postData: {
@@ -417,20 +420,22 @@ TYNative.updateStatus = (category, groupId, status) => {
 
 /**
  * [updateCategoryStatus description]
- * @param  {[type]} category [description]
- * @param  {[type]} groupId  [description]
- * @param  {[type]} status   [description]
+ * @param {[type]} category [description]
+ * @param {[type]} groupId  [description]
+ * @param {[type]} status   [description]
+ * @param {Object} devInfo [设备信息]
  * @return {[type]}          [description]
  * 更新某个分类下所有定时状态
  */
-TYNative.updateCategoryStatus = (category, status) => {
+TYNative.updateCategoryStatus = (category, status, devInfo) => {
   return new Promise((resolve, reject) => {
+    const { devId } = devInfo || TYNative.devInfo;
     TYNative.apiRNRequest({
       a: 's.m.linkage.timer.category.status',
       postData: {
         category,
         status,
-        devId: TYNative.devInfo.devId,
+        devId,
       },
       v: '1.0',
     }, (d) => {
