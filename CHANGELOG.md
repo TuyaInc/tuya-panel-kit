@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.16"></a>
+## [1.0.16](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.0.15...v1.0.16) (2019-06-03)
+
+
+### Features
+
+* add accessibilityLabel to android PickerView ([7932222](7932222))
+
+
+
 <a name="1.0.15"></a>
 ## [1.0.15](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.0.13...v1.0.15) (2019-04-01)
 
