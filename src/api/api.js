@@ -880,7 +880,7 @@ if (NativeModules) {
          * 因此这里需要将最新推送过来的数据缓存起来，业务面板在渲染完毕后自行再同步一次。
          */
         TYApi.__unInitializeDps = {
-          ...TYNative.__unInitializeDps,
+          ...TYApi.__unInitializeDps,
           ...d,
         };
       }
@@ -921,7 +921,7 @@ if (NativeModules) {
          * 因此这里需要将最新推送过来的数据缓存起来，业务面板在渲染完毕后自行再同步一次。
          */
         TYApi.__unInitializeEvents = {
-          ...TYNative.__unInitializeEvents,
+          ...TYApi.__unInitializeEvents,
           deviceOnline: { online: d.state },
         };
       }
@@ -939,7 +939,7 @@ if (NativeModules) {
          * 因此这里需要将最新推送过来的数据缓存起来，业务面板在渲染完毕后自行再同步一次。
          */
         TYApi.__unInitializeEvents = {
-          ...TYNative.__unInitializeEvents,
+          ...TYApi.__unInitializeEvents,
           appOnline: { online: d.state },
         };
       }
