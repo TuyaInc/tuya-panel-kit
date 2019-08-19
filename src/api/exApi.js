@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Platform, AppState, AppStateIOS } from 'react-native';
 import moment from 'moment';
 import TYNative from './api';
@@ -5,6 +6,31 @@ import Strings from '../i18n';
 import Utils from '../utils';
 
 const AppLife = Platform.OS === 'ios' ? AppStateIOS : AppState;
+
+const sucStyle = 'background: green; color: #fff;';
+const errStyle = 'background: red; color: #fff;';
+
+TYNative.request = function(a, postData, v = '1.0') {
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest(
+      {
+        a,
+        postData,
+        v,
+      },
+      d => {
+        const data = Utils.parseJSON(d);
+        console.log(`API Success: %c${a}%o`, sucStyle, data);
+        resolve(data);
+      },
+      err => {
+        const e = Utils.parseJSON(err);
+        console.log(`API Failed: %c${a}%o`, errStyle, e.message || e.errorMsg || e);
+        reject(err);
+      },
+    );
+  });
+};
 
 // =====================================================================
 // ============================== Cloud ================================
@@ -591,21 +617,23 @@ TYNative.saveDeviceTYNativeData = (key, data) => {
  * 获取设备所有dp点信息
  */
 TYNative.getDpsInfos = () => {
-  return new Promise((resolve, reject) => {
-    TYNative.apiRNRequest({
-      a: 's.m.dev.dp.get',
-      postData: {
-        gwId: TYNative.devInfo.devId,
-        devId: TYNative.devInfo.devId,
-      },
-      v: '2.0',
-    }, d => {
-      const data = Utils.parseJSON(d);
-      resolve(data);
-    }, e => {
-      reject(e);
-    });
-  });
+  const key = TYNative.devInfo.groupId ? 'group' : 'device';
+  const nameMap = {
+    device: 's.m.dev.dp.get',
+    group: 's.m.dev.group.dp.get',
+  };
+  const postDataMap = {
+    device: {
+      gwId: TYNative.devInfo.devId,
+      devId: TYNative.devInfo.devId,
+    },
+    group: { groupId: TYNative.devInfo.groupId },
+  };
+  const versionMap = {
+    device: '2.0',
+    group: '1.0',
+  };
+  return TYNative.request(nameMap[key], postDataMap[key], versionMap[key]);
 };
 
 /**
@@ -652,27 +680,29 @@ TYNative.getDpName = (dpCode) => {
 
 /**
  * 更新设备dp点名称
- * @param  {string} dpCode
- * @param  {string} name
+ * @param {string} dpCode
+ * @param {string} name
  */
 TYNative.updateDpName = (dpCode, name) => {
-  return new Promise((resolve, reject) => {
-    TYNative.apiRNRequest({
-      a: 's.m.dev.dp.name.update',
-      postData: {
-        gwId: TYNative.devInfo.devId,
-        devId: TYNative.devInfo.devId,
-        dpId: TYNative.getDpIdByCode(dpCode),
-        name,
-      },
-      v: '1.0',
-    }, d => {
-      const data = Utils.parseJSON(d);
-      resolve(data);
-    }, e => {
-      reject(e);
-    });
-  });
+  const key = TYNative.devInfo.groupId ? 'group' : 'device';
+  const nameMap = {
+    device: 's.m.dev.dp.name.update',
+    group: 'tuya.m.group.dpname.update',
+  };
+  const postDataMap = {
+    device: {
+      gwId: TYNative.devInfo.devId,
+      devId: TYNative.devInfo.devId,
+      dpId: TYNative.getDpIdByCode(dpCode),
+      name,
+    },
+    group: {
+      groupId: TYNative.devInfo.groupId,
+      dpId: +TYNative.getDpIdByCode(dpCode),
+      name,
+    },
+  };
+  return TYNative.request(nameMap[key], postDataMap[key], '1.0');
 };
 
 /**
