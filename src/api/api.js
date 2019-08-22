@@ -890,6 +890,18 @@ if (NativeModules) {
       Event.emit('bluetoothChange', d.state);
     });
 
+    /**
+     * https://wiki.tuya-inc.com:7799/pages/viewpage.action?pageId=26262981
+     *
+     * @desc 升级版蓝牙状态变更通知，IOS13新增
+     *
+     * state = 3, 未打开应用蓝牙权限
+     * state = 4, 系统蓝牙关闭
+     * state = 5, 系统蓝牙打开
+     */
+    AppDeviceEventEmitter.addListener('bluetoothStateChanged', (d) => {
+      Event.emit('bluetoothStateChanged', d.state);
+    });
 
     // AppDeviceEventEmitter.addListener('panelViewChange', () => {
     //   Device.initDevice().then(d => Event.emit('deviceChanged', d));
@@ -1063,6 +1075,27 @@ if (NativeModules) {
         });
       });
     };
+
+    /**
+     * https://wiki.tuya-inc.com:7799/pages/viewpage.action?pageId=26262981
+     *
+     * @desc 获取设备蓝牙权限状态，IOS13新增
+     *
+     * state = 3, 未打开应用蓝牙权限
+     * state = 4, 系统蓝牙关闭
+     * state = 5, 系统蓝牙打开
+     */
+    Device.getBluetoothState = () => {
+      return new Promise((resolve, reject) => {
+        const TYRCTBluetoothUtilManager = NativeModules.TYRCTBluetoothUtilManager || {};
+        (TYRCTBluetoothUtilManager.getBluetoothState || function() { reject(null); })((d) => {
+          if (d) {
+            return resolve(d.state);
+          }
+          reject(null);
+        });
+      });
+    }
 
     /**
      * wifi网络状态监测
