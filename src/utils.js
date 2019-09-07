@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+/* eslint-disable prettier/prettier */
 const numberToFixed = (n, c = 2) => {
   let s = `${Math.abs(n)}`;
   s = '0'.repeat(c) + s;
@@ -30,9 +32,12 @@ const parseJSON = str => {
   return rst;
 };
 
-
 module.exports = {
   parseJSON,
+
+  getBitValue(num, index) {
+    return (num & (1 << index)) >> index;
+  },
 
   timezone() {
     const d = new Date();
