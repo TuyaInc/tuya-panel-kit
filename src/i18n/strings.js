@@ -29,7 +29,6 @@ const lang = {
     airLevel4: 'Very Bad',
     airLevel5: 'Awful',
 
-
     day0: 'Sun',
     day1: 'Mon',
     day2: 'Tues',
@@ -42,6 +41,7 @@ const lang = {
 
     countdown_on: 'Turn off after {0}',
     countdown_off: 'Turn on after {0}',
+    bluetoothShareTip: 'Limited functionality, please turn on "Bluetooth Sharing"',
   },
   zh: {
     offline: '设备暂时不可操作\n请稍后再试',
@@ -81,6 +81,7 @@ const lang = {
 
     countdown_on: '设备将在{0}后关闭',
     countdown_off: '设备将在{0}后开启',
+    bluetoothShareTip: '功能受限，请开启“蓝牙共享”',
   },
 };
 

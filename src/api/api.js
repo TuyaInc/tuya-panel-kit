@@ -821,6 +821,7 @@ if (NativeModules) {
     };
 
     /**
+     * 设备能力值文档: https://www.yuque.com/tuya/rh2ffq/qxs2gr#DeAZ8
      * 是否是组网设备
      * 返回值: undefined | bool
      * 当 undefined，app不支持该接口
@@ -829,11 +830,19 @@ if (NativeModules) {
       if (!TYApi.devInfo) {
         throw new Error('Device uninitialized');
       }
-      const { nodeId } = TYApi.devInfo;
-      if (nodeId !== undefined) {
-        return nodeId.length > 0;
+      const { capability = 0 } = TYApi.devInfo;
+      return Utils.getBitValue(capability, 11) === 1;
+    };
+
+    /**
+     * 是否是sigMesh设备
+     **/
+    Device.isSigMeshDevice = () => {
+      if (!TYApi.devInfo) {
+        throw new Error('Device uninitialized');
       }
-      return nodeId;
+      const { capability = 0 } = TYApi.devInfo;
+      return Utils.getBitValue(capability, 15) === 1;
     };
 
 
@@ -846,12 +855,30 @@ if (NativeModules) {
       if (!TYApi.devInfo) {
         throw new Error('Device uninitialized');
       }
-      const { pcc } = TYApi.devInfo;
-      if (pcc !== undefined) {
-        return pcc.length === 0;
-      }
-      return pcc;
+      const { capability = 0 } = TYApi.devInfo;
+      return capability === 1;
+    };
 
+    /**
+     * 是否是蓝牙设备
+     **/
+    Device.isBleDevice = () => {
+      if (!TYApi.devInfo) {
+        throw new Error('Device uninitialized');
+      }
+      const { capability = 0 } = TYApi.devInfo;
+      return Utils.getBitValue(capability, 10) === 1 || Utils.getBitValue(capability, 11) === 1 || Utils.getBitValue(capability, 15) === 1;
+    };
+
+    /**
+     * 是否局域网
+     */
+    Device.isLocalLAN = () => {
+      if (!TYApi.devInfo) {
+        throw new Error('Device uninitialized');
+      }
+      const { attribute = 0 } = TYApi.devInfo;
+      return Utils.getBitValue(attribute, 6) === 1;
     };
 
 
@@ -898,6 +925,18 @@ if (NativeModules) {
       Event.emit('bluetoothChange', d.state);
     });
 
+    /**
+     * https://wiki.tuya-inc.com:7799/pages/viewpage.action?pageId=26262981
+     *
+     * @desc 升级版蓝牙状态变更通知，IOS13新增
+     *
+     * state = 3, 未打开应用蓝牙权限
+     * state = 4, 系统蓝牙关闭
+     * state = 5, 系统蓝牙打开
+     */
+    AppDeviceEventEmitter.addListener('bluetoothStateChanged', (d) => {
+      Event.emit('bluetoothStateChanged', d.state);
+    });
 
     // AppDeviceEventEmitter.addListener('panelViewChange', () => {
     //   Device.initDevice().then(d => Event.emit('deviceChanged', d));
@@ -1071,6 +1110,27 @@ if (NativeModules) {
         });
       });
     };
+
+    /**
+     * https://wiki.tuya-inc.com:7799/pages/viewpage.action?pageId=26262981
+     *
+     * @desc 获取设备蓝牙权限状态，IOS13新增
+     *
+     * state = 3, 未打开应用蓝牙权限
+     * state = 4, 系统蓝牙关闭
+     * state = 5, 系统蓝牙打开
+     */
+    Device.getBluetoothState = () => {
+      return new Promise((resolve, reject) => {
+        const TYRCTBluetoothUtilManager = NativeModules.TYRCTBluetoothUtilManager || {};
+        (TYRCTBluetoothUtilManager.getBluetoothState || function() { reject(null); })((d) => {
+          if (d) {
+            return resolve(d.state);
+          }
+          reject(null);
+        });
+      });
+    }
 
     /**
      * wifi网络状态监测
