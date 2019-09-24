@@ -912,37 +912,13 @@ if (NativeModules) {
     // 设备网络状态变更通知
     AppDeviceEventEmitter.addListener('deviceStateChange', (d) => {
       if (typeof d === 'undefined' || typeof d.state === 'undefined') return;
-      if (!isEmptyObj(TYApi.devInfo)) {
-        Event.emit('deviceOnline', { online: d.state });
-      } else {
-        /**
-         * 如果在根组件 mount 完毕之前，消息推送过来了，
-         * 面板会使用 app 刚进入面板传递的状态，导致状态与实体设备不一致,
-         * 因此这里需要将最新推送过来的数据缓存起来，业务面板在渲染完毕后自行再同步一次。
-         */
-        TYApi.__unInitializeEvents = {
-          ...TYApi.__unInitializeEvents,
-          deviceOnline: { online: d.state },
-        };
-      }
+      Event.emit('deviceOnline', { online: d.state });
     });
 
     // app网络状态变更通知
     AppDeviceEventEmitter.addListener('networkStateChange', (d) => {
       if (typeof d === 'undefined' || typeof d.state === 'undefined') return;
-      if (!isEmptyObj(TYApi.devInfo)) {
-        Event.emit('appOnline', { online: d.state });
-      } else {
-        /**
-         * 如果在根组件 mount 完毕之前，消息推送过来了，
-         * 面板会使用 app 刚进入面板传递的状态，导致状态与实体设备不一致,
-         * 因此这里需要将最新推送过来的数据缓存起来，业务面板在渲染完毕后自行再同步一次。
-         */
-        TYApi.__unInitializeEvents = {
-          ...TYApi.__unInitializeEvents,
-          appOnline: { online: d.state },
-        };
-      }
+      Event.emit('appOnline', { online: d.state });
     });
 
     // 设备信息变更通知,只通知,无数据
