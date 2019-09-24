@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.0"></a>
+# [1.1.0](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.0.16...v1.1.0) (2019-09-24)
+
+
+### Bug Fixes
+
+* **API:** 缓存组件渲染完毕之前收到的消息推送 ([672a2ab](672a2ab))
+
+
+### Features
+
+* 增加IOS13蓝牙权限相关接口 ([b6e5e8f](b6e5e8f))
+* 定时相关接口支持自定义devInfo(为了子设备定时) ([63a6500](63a6500))
+* **api:** 设备属性判断统一为使用capability ([4b4b023](4b4b023))
+* **ExApi:** 额外暴露TYNative.request方法 / getDpsInfos updateDpName 自适应群组设备 ([5505efd](5505efd))
+
+
+
 <a name="1.0.16"></a>
 ## [1.0.16](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.0.15...v1.0.16) (2019-06-03)
 
