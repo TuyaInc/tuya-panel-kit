@@ -9,13 +9,13 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * **API:** 缓存组件渲染完毕之前收到的消息推送 ([672a2ab](672a2ab))
+* **API:** 设备属性判断统一为使用capability，避免设备类型判断错误 ([4b4b023](4b4b023))
 
 
 ### Features
 
-* 增加IOS13蓝牙权限相关接口 ([b6e5e8f](b6e5e8f))
-* 定时相关接口支持自定义devInfo(为了子设备定时) ([63a6500](63a6500))
-* **api:** 设备属性判断统一为使用capability ([4b4b023](4b4b023))
+* **API:** 增加IOS13蓝牙权限相关接口 ([b6e5e8f](b6e5e8f))
+* **ExAPI:** 定时相关接口支持自定义devInfo(为了子设备定时) ([63a6500](63a6500))
 * **ExApi:** 额外暴露TYNative.request方法 / getDpsInfos updateDpName 自适应群组设备 ([5505efd](5505efd))
 
 
