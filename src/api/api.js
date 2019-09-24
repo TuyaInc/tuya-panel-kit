@@ -874,7 +874,15 @@ if (NativeModules) {
           Event.emit('dpDataChange', newState);
         }
       } else {
-        TYApi.__unInitializeDps = d;
+        /**
+         * 如果在根组件 mount 完毕之前，消息推送过来了，
+         * 面板会使用 app 刚进入面板传递的状态，导致状态与实体设备不一致,
+         * 因此这里需要将最新推送过来的数据缓存起来，业务面板在渲染完毕后自行再同步一次。
+         */
+        TYApi.__unInitializeDps = {
+          ...TYApi.__unInitializeDps,
+          ...d,
+        };
       }
     });
 
