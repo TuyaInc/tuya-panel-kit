@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.1"></a>
+## [1.1.1](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.0...v1.1.1) (2019-11-12)
+
+
+### Features
+
+* **I18N:** 避免由于定义顺序问题导致默认语言包不为英文的bug ([0204e5e](0204e5e))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.0.16...v1.1.0) (2019-09-24)
 
