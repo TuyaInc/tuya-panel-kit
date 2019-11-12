@@ -1,3 +1,4 @@
+/* eslint-disable */
 import TYNative from '../api';
 import Utils from '../utils';
 
@@ -8,7 +9,8 @@ export default class I18N {
     }
 
     this.strings = this.mergeLanguage(props, TYNative.lang);
-    this.setLanguage('en');
+    this.defaultLang = this.strings.en ? 'en' : Object.keys(this.strings)[0];
+    this.setLanguage(this.defaultLang);
     if (typeof TYNative.mobileInfo === 'undefined') {
       TYNative.getMobileInfo().then((d) => {
         this.setLanguage(d.lang);
@@ -90,12 +92,12 @@ export default class I18N {
 
   _getBestMatchingLanguage(language, props) {
     if (props[language]) return language;
-    let idx = language.lastIndexOf('-');
+    const idx = language.lastIndexOf('-');
     if (idx >= 0) {
-      language = language.substring(0, idx);
-      return this._getBestMatchingLanguage(language, props);
+      const lang = language.substring(0, idx);
+      return this._getBestMatchingLanguage(lang, props);
     }
-    return Object.keys(props)[0];
+    return this.defaultLang;
   }
 
   // Format the passed string replacing the numbered placeholders
