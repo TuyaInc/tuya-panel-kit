@@ -395,7 +395,7 @@ TYNative.removeTimer = (groupId, category, devInfo) => {
     TYNative.apiRNRequest({
       a: 'tuya.m.timer.group.remove',
       postData: {
-        type: groupId ? 'device_group' : 'device',
+        type: devGroupId ? 'device_group' : 'device',
         bizId: devGroupId || devId,
         groupId,
         category,
