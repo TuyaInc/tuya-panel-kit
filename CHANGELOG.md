@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.2"></a>
+## [1.1.2](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.1...v1.1.2) (2019-11-23)
+
+
+### Bug Fixes
+
+* **exApi:** 修复 removeTimer 接口群组bug ([ba74d85](ba74d85))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.0...v1.1.1) (2019-11-12)
 
