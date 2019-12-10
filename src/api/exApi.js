@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { Platform, AppState, AppStateIOS } from 'react-native';
+import { Platform, AppState, AppStateIOS, NativeModules } from 'react-native';
 import moment from 'moment';
+import RNFetchBlob from 'rn-fetch-blob';
 import TYNative from './api';
 import Strings from '../i18n';
 import Utils from '../utils';
@@ -1042,5 +1043,100 @@ TYNative.uploadFile = ({ AWSAccessKeyId, ossAccessId, policy, signature, host, k
       .catch(e => reject(e));
   });
 }
+
+TYNative.getUploadSign = function(biz, uploadFileName, type = 'image', method = 'POST') {
+  return new Promise((resolve, reject) => {
+    TYNative.apiRNRequest({
+      a: 'tuya.m.storage.upload.sign',
+      postData: {
+        biz,
+        type,
+        uploadFileName,
+        method, // 若仅支持PUT则返回PUT
+      },
+      v: '3.0',
+    }, d => {
+      const data = Utils.parseJSON(d);
+      resolve(data);
+    }, error => {
+      reject(error);
+    });
+  });
+};
+
+TYNative.uploadImageFile = async(res, biz, filename, fileType) => {
+  try {
+    const auth = await TYNative.getUploadSign(biz, filename) || {};
+    console.log('====auth====', auth);
+    const { headers, cloudKey, method, url, type, formData, postData } = auth;
+    const isPutMethod = /put/gi.test(method);
+    let resData;
+    if (isPutMethod) {
+      if (!NativeModules.RNFetchBlob) {
+        throw new Error('Current Version Not support RN Fetch Blob');
+      } else {
+        resData = await RNFetchBlob.fetch(
+          'PUT',
+          url,
+          headers,
+          isIos ? `RNFetchBlob-${res.uri}` : RNFetchBlob.wrap(res.path)
+        );
+      }
+    } else if (/cos/gi.test(type)) {
+      // 腾讯云cos post上传取formData, 其他区取postData，且body结构不同
+      const body = new global.FormData();
+      Object.keys(formData).forEach(key => {
+        body.append(key, formData[key]);
+      });
+      body.append('file', {
+        type: fileType,
+        uri: res.uri,
+        name: filename,
+        size: res.fileSize,
+      });
+      resData = await global.fetch(url, {
+        headers,
+        body,
+        method: 'POST',
+      });
+    } else {
+      const body = new global.FormData();
+      const { sign, AWSAccessKeyId, ossAccessId, policy, bucketUrl } = postData;
+      if (AWSAccessKeyId) {
+        body.append('AWSAccessKeyId', AWSAccessKeyId);
+      }
+      if (ossAccessId) {
+        body.append('OSSAccessKeyId', ossAccessId);
+      }
+      body.append('Signature', sign);
+      body.append('policy', policy);
+      body.append('key', cloudKey);
+      body.append('file', {
+        type: fileType,
+        uri: res.uri,
+        name: filename,
+        size: res.fileSize,
+      });
+
+      resData = await global.fetch(bucketUrl, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body,
+        method: 'POST',
+      });
+    }
+    console.log('====xml=====', resData);
+    if (!resData) {
+      throw new Error('Response Error');
+    }
+    const statusCode = isPutMethod ? resData.info().status : resData.status;
+
+    return {
+      success: /^2\d{2}/.test(statusCode),
+      cloudKey,
+    };
+  } catch (err) {
+    console.warn(' ======== upload error ======== ', err);
+  }
+};
 
 export default TYNative;
