@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.3"></a>
+## [1.1.3](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.2...v1.1.3) (2019-12-10)
+
+
+### Features
+
+* **api:** 增加文件上传签名接口3.0及图片上传接口 ([9eb6f1a](9eb6f1a))
+
+
+
 <a name="1.1.2"></a>
 ## [1.1.2](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.1...v1.1.2) (2019-11-23)
 
