@@ -1079,7 +1079,7 @@ TYNative.uploadImageFile = async(res, biz, filename, fileType) => {
           'PUT',
           url,
           headers,
-          isIos ? `RNFetchBlob-${res.uri}` : RNFetchBlob.wrap(res.path)
+          Platform.OS === 'ios' ? `RNFetchBlob-${res.uri}` : RNFetchBlob.wrap(res.path)
         );
       }
     } else if (/cos/gi.test(type)) {
