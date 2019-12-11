@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.4"></a>
+## [1.1.4](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.3...v1.1.4) (2019-12-11)
+
+
+### Bug Fixes
+
+* **exApi:** 修复uploadImageFile判断系统bug ([9f51585](9f51585))
+
+
+
 <a name="1.1.3"></a>
 ## [1.1.3](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.2...v1.1.3) (2019-12-10)
 
