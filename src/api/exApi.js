@@ -1,7 +1,6 @@
 /* eslint-disable */
 import { Platform, AppState, AppStateIOS, NativeModules } from 'react-native';
 import moment from 'moment';
-import RNFetchBlob from 'rn-fetch-blob';
 import TYNative from './api';
 import Strings from '../i18n';
 import Utils from '../utils';
@@ -1075,6 +1074,7 @@ TYNative.uploadImageFile = async(res, biz, filename, fileType) => {
       if (!NativeModules.RNFetchBlob) {
         throw new Error('Current Version Not support RN Fetch Blob');
       } else {
+        const RNFetchBlob = require('rn-fetch-blob').default;
         resData = await RNFetchBlob.fetch(
           'PUT',
           url,
