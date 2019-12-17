@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.5"></a>
+## [1.1.5](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.4...v1.1.5) (2019-12-17)
+
+
+### Bug Fixes
+
+* **exApi:** 低版本引入RNFetchBlob崩溃问题修复 ([1c2172c](1c2172c))
+
+
+
 <a name="1.1.4"></a>
 ## [1.1.4](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.3...v1.1.4) (2019-12-11)
 
