@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.6"></a>
+## [1.1.6](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.5...v1.1.6) (2020-02-27)
+
+
+### Bug Fixes
+
+* react / react-native 依赖移至 peerDependencies ([e876b66](e876b66))
+
+
+### Features
+
+* **uiIdNav:** 新增面板跳面板相关方法封装 ([30a5209](30a5209))
+
+
+
 <a name="1.1.5"></a>
 ## [1.1.5](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.4...v1.1.5) (2019-12-17)
 
