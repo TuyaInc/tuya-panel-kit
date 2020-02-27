@@ -29,11 +29,13 @@
       "postchangelog": "./node_modules/replace/bin/replace.js 'http://code.registry.wgine.com:10023/TuyaRN/tuya-native-kit/commits/' '' CHANGELOG.md && ./node_modules/replace/bin/replace.js http://code.registry.wgine.com:10023/ http://code.registry.wgine.com/ CHANGELOG.md"
     }
   },
+  "peerDependencies": {
+    "react": "16.0.0",
+    "react-native": "0.51.0"
+  },
   "dependencies": {
     "moment": "^2.20.1",
     "prop-types": "^15.6.1",
-    "react": "16.0.0",
-    "react-native": "0.51.0",
     "react-native-deprecated-custom-components": "git+https://github.com/facebookarchive/react-native-custom-components.git#83c4fa19ccc9b6cd48ff80e457c493332819b486",
     "rn-fetch-blob": "^0.11.2"
   },
