@@ -3,6 +3,7 @@ import {
   NativeModules,
   DeviceEventEmitter,
   NativeAppEventEmitter,
+  NativeEventEmitter,
   Platform,
   AlertIOS,
 } from 'react-native';
@@ -214,7 +215,6 @@ var AppDeviceEventEmitter = {};
 if (NativeModules) {
   _TYAppNative = NativeModules.TYRCTPublicModule || NativeModules.TYRCTPublicManager;
   _TYDeviceDevice = NativeModules.TYRCTDeviceModule || NativeModules.TYRCTPanelManager;
-
 
   TYApi = Object.assign({}, TYApi, {
     debounce(func, wait, immediate) {
@@ -1228,6 +1228,74 @@ if (TYApi.panelInfo && TYApi.panelInfo.isVDevice) {
   };
 }
 /* ********************************************************** */
+
+/* ********************************************************** */
+// 面板跳面板相关接口
+if (App && NativeModules) {
+  const _TYAppNativeNav = NativeModules.TYRCTNavManager;
+  const _AppSupport = Device.verSupported(5.23) && _TYAppNativeNav;
+  const NavEventName = 'message';
+  class Nav {
+    constructor() {
+      this.emitter = null;
+      this.subscription = null;
+    }
+
+    createEmitter() {
+      if (!_AppSupport) {
+        console.log('-----AppRnVersion must >= 5.23');
+        return;
+      }
+      this.emitter = new NativeEventEmitter(NativeModules.TYRCTNavManager)
+    }
+
+    addListener(callback) {
+      if (!_AppSupport) {
+        console.log('-----AppRnVersion must >= 5.23');
+        return;
+      }
+      if (this.emitter) {
+        this.subscription = this.emitter.addListener('receiveBroadcast', callback)
+      }
+    }
+
+    removeEmitter() {
+      if (!_AppSupport) {
+        console.log('-----AppRnVersion must >= 5.23');
+        return;
+      }
+      if (this.subscription) {
+        this.subscription.remove();
+      }
+    }
+
+    registerEventListener() {
+      if (!_AppSupport) {
+        console.log('-----AppRnVersion must >= 5.23');
+        return;
+      }
+      _TYAppNativeNav.broadcastReceiverRegister(NavEventName);
+    }
+
+    sendEvent(props) {
+      if (!_AppSupport) {
+        console.log('-----AppRnVersion must >= 5.23');
+        return;
+      }
+      _TYAppNativeNav.broadcastMessage(NavEventName, props);
+    }
+
+    pushWithUiID(uiId, props) {
+      if (!_AppSupport) {
+        console.log('-----AppRnVersion must >= 5.23');
+        return;
+      }
+      _TYAppNativeNav.pushWithUIID(uiId, props)
+    }
+  }
+
+  App.uiIdNavEventEmitter = new Nav();
+}
 
 
 //eslint-disable-next-line
