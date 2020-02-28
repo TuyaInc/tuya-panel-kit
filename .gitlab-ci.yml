@@ -1,0 +1,9 @@
+notify:
+  only:
+    refs:
+      - master
+    changes:
+      - package.json
+  script:
+    - echo 'Start notify'
+    - node scripts/notify.js
