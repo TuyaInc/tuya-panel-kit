@@ -2,6 +2,7 @@ notify:
   only:
     refs:
       - master
+      - develop_1.0.x
     changes:
       - package.json
   script:
