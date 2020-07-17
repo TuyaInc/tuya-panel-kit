@@ -20,7 +20,7 @@
     "react-native-deprecated-custom-components": "git+https://github.com/facebookarchive/react-native-custom-components.git#83c4fa19ccc9b6cd48ff80e457c493332819b486",
     "react-addons-shallow-compare": "^15.6.2",
     "events": "^1.1.1",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.19",
     "moment": "^2.20.1",
     "prop-types": "^15.6.1",
     "react": "16.0.0",
