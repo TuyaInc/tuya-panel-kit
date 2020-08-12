@@ -631,7 +631,7 @@ if (NativeModules) {
         const error = d => {
           Event.emit('message', d);
         };
-        if (Device.isMeshDevice()) {
+        if (Device.isMeshDevice() || Device.isSigMeshDevice()) {
           return _TYDeviceDevice.getDpDataFromMeshDevice({ dpIds: [dpId] }, error);
         }
         _TYDeviceDevice.getDpDataFromDevice({
