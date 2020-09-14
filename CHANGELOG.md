@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.8"></a>
+## [1.1.8](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.7...v1.1.8) (2020-09-14)
+
+
+### Features
+
+* **I18N:** 兼容 app 3.20 版本安卓/IOS 地区多语言 key 变动 ([4d75acb](4d75acb))
+
+
+
 <a name="1.1.7"></a>
 ## [1.1.7](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.6...v1.1.7) (2020-08-12)
 

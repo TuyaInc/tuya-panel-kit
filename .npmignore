@@ -1,0 +1,4 @@
+.babelrc
+coverage
+__tests__
+__mocks__

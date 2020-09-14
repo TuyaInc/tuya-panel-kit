@@ -1,6 +1,9 @@
 /* eslint-disable */
-import TYNative from '../api';
-import Utils from '../utils';
+import TYSdk, { parseJSON } from '../api';
+
+const TYNative = TYSdk.native;
+const TYMobile = TYSdk.mobile;
+const TYDevice = TYSdk.device;
 
 export default class I18N {
   constructor(props) {
@@ -12,7 +15,7 @@ export default class I18N {
     this.defaultLang = this.strings.en ? 'en' : Object.keys(this.strings)[0];
     this.setLanguage(this.defaultLang);
     if (typeof TYNative.mobileInfo === 'undefined') {
-      TYNative.getMobileInfo().then((d) => {
+      TYMobile.getMobileInfo().then(d => {
         this.setLanguage(d.lang);
       });
     } else {
@@ -27,33 +30,22 @@ export default class I18N {
     this.buildLanguage(this.language);
   }
 
-  forceUpdateNetworkLang() {
-    return new Promise((resolve, reject) => {
-      TYNative.apiRNRequest({
-        a: 'tuya.m.i18n.get',
-        postData: {
-          'productId': TYNative.devInfo.productId,
-          'moduleName': 'h5',
-          'endId': 2,
-          'osId': 0
-        },
-        v: '1.0'
-      }, (d) => {
-        let data = Utils.parseJSON(d);
-        if (__DEV__) {
-          console.info('tuya.m.i18n.get', data);
-        }
-        if (data) {
-          this.strings = this.mergeLanguage(this.strings, data);
-          this.buildLanguage(this.language);
-          resolve(data);
-        } else {
-          reject();
-        }
-      }, (error) => {
-        reject(error);
-      });
-    });
+  forceUpdateNetworkLang(productId) {
+    return TYSdk.apiRequest('tuya.m.i18n.get', {
+      productId: productId,
+      moduleName: 'h5',
+      endId: 2,
+      osId: 0,
+    })
+    .then((data) => {
+      if (__DEV__) {
+        console.info('tuya.m.i18n.get', data);
+      }
+      if (data) {
+        this.strings = this.mergeLanguage(this.strings, data);
+        this.buildLanguage(this.language);
+      }
+    })
   }
 
   mergeLanguage(L1, L2) {
@@ -76,7 +68,22 @@ export default class I18N {
     let bestLanguage = this._getBestMatchingLanguage(language, this.strings);
     if (bestLanguage === this.language) return;
     this.language = bestLanguage;
-    this.buildLanguage(this.language);
+    /**
+     * ios 的中文简体固定为 zh-Hans，
+     * 但安卓的中文简体可能有一大堆排列组件 = =，如 zh_CN、zh_cn、zh_Hans_CH、zh_hans_cn 等等;
+     */
+    const isZhRegex = /^zh-hans$|^zh_hans$|^zh_cn$|^zh-cn$|^zh_hans_\w+|^zh-hans-\w+/;
+    /**
+     * 如果匹配到位中文简体地区，
+     * 则将中文 zh 相关的 values 都写入到 this.strings 下，保证兜底本地 zh 相关的能取到，
+     * 再将当前地区 key 相关的 values 都写入到 this.strings 下，优先级最高；
+     */
+    if (typeof language === 'string' && isZhRegex.test(language.toLowerCase())) {
+      this.buildLanguage('zh');
+      this.buildLanguage(language);
+    } else {
+      this.buildLanguage(this.language);
+    }
   }
 
   buildLanguage(language) {
@@ -95,6 +102,11 @@ export default class I18N {
     const idx = language.lastIndexOf('-');
     if (idx >= 0) {
       const lang = language.substring(0, idx);
+      return this._getBestMatchingLanguage(lang, props);
+    }
+    const underlineIdx = language.lastIndexOf('_');
+    if (underlineIdx >= 0) {
+      const lang = language.substring(0, underlineIdx);
       return this._getBestMatchingLanguage(lang, props);
     }
     return this.defaultLang;
@@ -161,9 +173,11 @@ export default class I18N {
   }
 
   getLang(key, defaultString) {
-    return typeof this[key] !== 'undefined' ? this[key]
-      : typeof defaultString !== 'undefined' ? defaultString
-        : `I18N@${key}`;
+    return typeof this[key] !== 'undefined'
+      ? this[key]
+      : typeof defaultString !== 'undefined'
+      ? defaultString
+      : `I18N@${key}`;
   }
 
   /**
@@ -172,7 +186,7 @@ export default class I18N {
    */
   getRangeStrings(dpCode) {
     const result = {};
-    const schema = TYNative.getDpSchema(dpCode);
+    const schema = TYDevice.getDpSchema(dpCode);
     if (typeof schema === 'undefined') return result;
     const lists = schema.range;
     for (const v of lists) {
@@ -190,7 +204,7 @@ export default class I18N {
    */
   parseCountdown(t, power) {
     const h = parseFloat(t / 3600);
-    const m = parseFloat((t / 60) - (parseInt(h, 10) * 60));
+    const m = parseFloat(t / 60 - parseInt(h, 10) * 60);
 
     const time = h >= 1.0 ? `${Math.round(h)}${this.t_hour}` : `${Math.round(m)}${this.t_minute}`;
 
