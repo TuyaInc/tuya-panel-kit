@@ -76,7 +76,22 @@ export default class I18N {
     let bestLanguage = this._getBestMatchingLanguage(language, this.strings);
     if (bestLanguage === this.language) return;
     this.language = bestLanguage;
-    this.buildLanguage(this.language);
+    /**
+     * ios 的中文简体固定为 zh-Hans，
+     * 但安卓的中文简体可能有一大堆排列组件 = =，如 zh_CN、zh_cn、zh_Hans_CH、zh_hans_cn 等等;
+     */
+    const isZhRegex = /^zh-hans$|^zh_cn$|^zh_hans_\w+/;
+    /**
+     * 如果匹配到位中文简体地区，
+     * 则将中文 zh 相关的 values 都写入到 this.strings 下，保证兜底本地 zh 相关的能取到，
+     * 再将当前地区 key 相关的 values 都写入到 this.strings 下，优先级最高；
+     */
+    if (typeof language === 'string' && isZhRegex.test(language.toLowerCase())) {
+      this.buildLanguage('zh');
+      this.buildLanguage(language);
+    } else {
+      this.buildLanguage(this.language);
+    }
   }
 
   buildLanguage(language) {
@@ -95,6 +110,11 @@ export default class I18N {
     const idx = language.lastIndexOf('-');
     if (idx >= 0) {
       const lang = language.substring(0, idx);
+      return this._getBestMatchingLanguage(lang, props);
+    }
+    const underlineIdx = language.lastIndexOf('_');
+    if (underlineIdx >= 0) {
+      const lang = language.substring(0, underlineIdx);
       return this._getBestMatchingLanguage(lang, props);
     }
     return this.defaultLang;
