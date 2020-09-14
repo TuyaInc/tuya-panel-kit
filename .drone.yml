@@ -34,6 +34,7 @@ steps:
         path: /usr/local/share/.cache/yarn
     commands:
       - echo 'Start notify wx'
+      - yarn install --frozen-lockfile --silent
       - node scripts/notify-wx.js
     when:
       event:
