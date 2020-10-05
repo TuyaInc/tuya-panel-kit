@@ -6,6 +6,8 @@
   "main": "./src/index.js",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:android": "export RN_JEST_PLATFORM='android' && yarn test",
     "commit": "git-cz",
     "release:major:pre": "standard-version --release-as major --prerelease rc --skip.changelog=true --skip.tag=true",
     "release:major": "standard-version --release-as major",
@@ -34,10 +36,7 @@
     "react-native": "0.51.0"
   },
   "dependencies": {
-    "moment": "^2.20.1",
-    "prop-types": "^15.6.1",
-    "react-native-deprecated-custom-components": "git+https://github.com/facebookarchive/react-native-custom-components.git#83c4fa19ccc9b6cd48ff80e457c493332819b486",
-    "rn-fetch-blob": "^0.11.2"
+    "prop-types": "^15.6.1"
   },
   "author": [
     "fri3nds<chenglong@tuya.com>",
@@ -64,9 +63,17 @@
     "globals": {
       "__DEV__": true
     },
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage/",
+    "collectCoverageFrom": [
+      "<rootDir>/src/api/*.js",
+      "<rootDir>/src/i18n/*.js"
+    ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/src/i18n/__tests__/utils.js"
+      "/src/api/__tests__/utils",
+      "/src/i18n/__tests__/utils",
+      "/src/nativeModule"
     ]
   }
 }

@@ -1,3 +1,3 @@
-import TYNative from './exApi';
+import TYNative from './api';
 
 export default TYNative;

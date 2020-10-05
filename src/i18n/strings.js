@@ -1,6 +1,6 @@
 import I18N from './index';
 
-const lang = {
+export const lang = {
   en: {
     offline: 'Device Offline',
     appoffline: 'Network error, please check ',
@@ -86,4 +86,5 @@ const lang = {
 };
 
 const Strings = new I18N(lang);
+
 export default Strings;

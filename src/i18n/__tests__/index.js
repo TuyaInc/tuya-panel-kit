@@ -1,6 +1,8 @@
-import { DEFAULT_LANG } from './utils';
+/**
+ * 保证多语言核心功能正常
+ */
 
-describe('I18N', () => {
+describe('I18N Core', () => {
   beforeEach(() => jest.resetModules());
 
   it('en 保证多语言显示正常', () => {
