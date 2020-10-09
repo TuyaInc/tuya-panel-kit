@@ -52,7 +52,6 @@ describe('TYSdk', () => {
     expect(TYSdk.device).toHaveProperty('setDeviceInfo');
     expect(TYSdk.device).toHaveProperty('setGState');
     expect(TYSdk.device).toHaveProperty('setState');
-    expect(TYSdk.device).toHaveProperty('showDeviceMenu');
   });
 
   it('TYSdk.event should contain right modules', () => {
@@ -289,13 +288,6 @@ describe('TYSdk', () => {
     expect(TYSdk.device.isLocalLAN()).toBeTruthy();
     TYSdk.device.setDeviceInfo(createDevInfo({ attribute: '65' }));
     expect(TYSdk.device.isLocalLAN()).toBeTruthy();
-  });
-
-  it('device.showDeviceMenu', () => {
-    const { NativeModules } = require('react-native');
-    const TYSdk = require('../api').default;
-    TYSdk.device.showDeviceMenu();
-    expect(NativeModules.TYRCTPanelManager.showDeviceMenu).toHaveBeenCalled();
   });
 
   it('device.getBleManagerState', () => {

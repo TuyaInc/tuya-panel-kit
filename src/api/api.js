@@ -663,10 +663,6 @@ if (NativeModules) {
       return getBitValue(attribute, 6) === 1;
     };
 
-    Device.showDeviceMenu = function() {
-      return _TYDeviceDevice.showDeviceMenu();
-    };
-
     /**
      * 获取蓝牙状态
      * 返回值: bool类型
