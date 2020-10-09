@@ -462,21 +462,6 @@ if (NativeModules) {
       return TYDeviceData.gState[dp];
     };
 
-    /* istanbul ignore next */
-    Device.checkDpValueType = (idOrCode, val) => {
-      if (TYDeviceData.devInfo) {
-        if (Device.checkDpExist(idOrCode)) {
-          if (/^\d+$/.test(idOrCode)) {
-            idOrCode = Device.getDpCodeById(idOrCode);
-          }
-          const schema = Device.getDpSchema();
-          return val === schema[idOrCode].schemaType;
-        }
-      } else {
-        console.log('-----未初始化,checkDpValueType');
-      }
-    };
-
     Device.getDpDataFromDevice = idOrCode => {
       console.log('-----主动查询DP', idOrCode);
       return new Promise((resolve, reject) => {

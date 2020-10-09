@@ -23,7 +23,6 @@ describe('TYSdk', () => {
   it('TYSdk.device should contain right modules', () => {
     const TYSdk = require('../api').default;
     expect(TYSdk.device).toHaveProperty('checkDpExist');
-    expect(TYSdk.device).toHaveProperty('checkDpValueType');
     expect(TYSdk.device).toHaveProperty('deleteDeviceInfo');
     expect(TYSdk.device).toHaveProperty('formatDps');
     expect(TYSdk.device).toHaveProperty('getBleManagerState');
