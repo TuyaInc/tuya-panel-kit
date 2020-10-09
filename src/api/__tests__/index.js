@@ -23,7 +23,6 @@ describe('TYSdk', () => {
   it('TYSdk.device should contain right modules', () => {
     const TYSdk = require('../api').default;
     expect(TYSdk.device).toHaveProperty('checkDpExist');
-    expect(TYSdk.device).toHaveProperty('checkDpValueType');
     expect(TYSdk.device).toHaveProperty('deleteDeviceInfo');
     expect(TYSdk.device).toHaveProperty('formatDps');
     expect(TYSdk.device).toHaveProperty('getBleManagerState');
@@ -34,8 +33,10 @@ describe('TYSdk', () => {
     expect(TYSdk.device).toHaveProperty('getDpDataFromDevice');
     expect(TYSdk.device).toHaveProperty('getDpIdByCode');
     expect(TYSdk.device).toHaveProperty('getDpSchema');
+    expect(TYSdk.device).toHaveProperty('getFunConfig');
     expect(TYSdk.device).toHaveProperty('getGState');
     expect(TYSdk.device).toHaveProperty('getState');
+    expect(TYSdk.device).toHaveProperty('getUnpackPanelInfo');
     expect(TYSdk.device).toHaveProperty('gotoBlePermissions');
     expect(TYSdk.device).toHaveProperty('gotoDeviceWifiNetworkMonitor');
     expect(TYSdk.device).toHaveProperty('initDevice');
@@ -372,6 +373,37 @@ describe('TYSdk', () => {
     TYSdk.device.getDpDataFromDevice('switch_1');
   });
 
+  it('device.getFunConfig', () => {
+    const { createDevInfo } = require('./utils');
+    const TYSdk = require('../api').default;
+    TYSdk.device.setDeviceInfo(createDevInfo());
+    const funConfig1 = TYSdk.device.getFunConfig();
+    expect(funConfig1).toEqual({});
+
+    TYSdk.device.setDeviceInfo(
+      createDevInfo({ panelConfig: { fun: { showCountdown: true, showXXX: '123' } } })
+    );
+    const funConfig2 = TYSdk.device.getFunConfig();
+    expect(funConfig2).toEqual({ panelFunShowCountdown: true, panelFunShowXXX: '123' });
+  });
+
+  it('device.getUnpackPanelInfo', () => {
+    const { NativeModules } = require('react-native');
+    const { createDevInfo } = require('./utils');
+    const TYSdk = require('../api').default;
+    TYSdk.device.setDeviceInfo(createDevInfo());
+    TYSdk.device.getUnpackPanelInfo().then(lang => {
+      expect(NativeModules.TYRCTPanelManager.getPanelInfo).toHaveBeenCalled();
+      expect(lang).toBe('testLang');
+      expect(TYSdk.native.lang).toBe('testLang');
+      expect(TYSdk.native.panelInfo).toEqual({ isVDevice: true });
+    });
+    NativeModules.TYRCTPanelManager.getPanelInfo.mock.calls[0][0]('', {
+      lang: 'testLang',
+      isVDevice: true,
+    });
+  });
+
   /**
    * Event Test Suites
    */
@@ -398,9 +430,10 @@ describe('TYSdk', () => {
   });
 
   it('event.deviceChanged', () => {
+    const { NativeModules } = require('react-native');
     const TYSdk = require('../api').default;
     const { createDevInfo } = require('./utils');
-    const { MOCK_TRANS_DEV_INFO } = require('./utils/constant');
+    const { MOCK_ORIG_DEV_INFO, MOCK_TRANS_DEV_INFO } = require('./utils/constant');
     TYSdk.device.setDeviceInfo(createDevInfo());
     TYSdk.event.on('deviceDataChange', data => {
       expect(data).toEqual({ type: 'devInfo', payload: MOCK_TRANS_DEV_INFO });
@@ -409,6 +442,10 @@ describe('TYSdk', () => {
       return value[0] === 'deviceChanged';
     })[1];
     evtCb();
+    // 模拟触发 getDevInfo 的第二个回调参数
+    NativeModules.TYRCTPanelManager.getDevInfo.mock.calls[1][1](MOCK_ORIG_DEV_INFO);
+    // 模拟触发 getNetworkType 的第一个回调参数
+    NativeModules.TYRCTPublicManager.getNetworkType.mock.calls[1][0]('WIFI');
   });
 
   it('event.bluetoothChange', () => {

@@ -462,21 +462,6 @@ if (NativeModules) {
       return TYDeviceData.gState[dp];
     };
 
-    /* istanbul ignore next */
-    Device.checkDpValueType = (idOrCode, val) => {
-      if (TYDeviceData.devInfo) {
-        if (Device.checkDpExist(idOrCode)) {
-          if (/^\d+$/.test(idOrCode)) {
-            idOrCode = Device.getDpCodeById(idOrCode);
-          }
-          const schema = Device.getDpSchema();
-          return val === schema[idOrCode].schemaType;
-        }
-      } else {
-        console.log('-----未初始化,checkDpValueType');
-      }
-    };
-
     Device.getDpDataFromDevice = idOrCode => {
       console.log('-----主动查询DP', idOrCode);
       return new Promise((resolve, reject) => {
@@ -724,6 +709,43 @@ if (NativeModules) {
           function() {
             reject();
           })(resolve, reject);
+      });
+    };
+
+    /**
+     * 获取设备功能点配置
+     */
+    Device.getFunConfig = () => {
+      const funConfig = {};
+      if (!TYDeviceData.devInfo) return {};
+      if (!TYDeviceData.devInfo.panelConfig) return {};
+      const { fun } = TYDeviceData.devInfo.panelConfig;
+      if (!fun) return {};
+      for (const i in fun) {
+        if (Object.prototype.hasOwnProperty.call(fun, i)) {
+          const key = camelize(`panel_fun_${i}`);
+          funConfig[key] = fun[i];
+        }
+      }
+      return funConfig;
+    };
+
+    /**
+     * 获取拆包面板信息
+     */
+    Device.getUnpackPanelInfo = () => {
+      return new Promise(resolve => {
+        if (_TYDeviceDevice.getPanelInfo) {
+          _TYDeviceDevice.getPanelInfo((_, d) => resolve(d));
+        } else {
+          resolve('');
+        }
+      }).then(d => {
+        if (d && d.lang) {
+          Native.lang = d.lang;
+        }
+        Native.panelInfo = { isVDevice: d.isVDevice };
+        return d.lang;
       });
     };
 
