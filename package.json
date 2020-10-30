@@ -72,8 +72,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/src/api/__tests__/utils",
-      "/src/i18n/__tests__/utils",
-      "/src/nativeModule"
+      "/src/i18n/__tests__/utils"
     ]
   }
 }
