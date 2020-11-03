@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0"></a>
+# [2.0.0](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.8...v2.0.0) (2020-11-03)
+
+
+### Code Refactoring
+
+* **TYSdk:** kit 内外部对齐 ([f501ff1](f501ff1))
+
+
+### Features
+
+* **TYSdk.device:** add getDeviceState method ([ef83010](ef83010))
+* **TYSdk.device:** add getFunConfig & getUnpackPanelInfo method ([d9e64f5](d9e64f5))
+
+
+### BREAKING CHANGES
+
+* **TYSdk:** 移除exApi & TYNative 更名为 TYSdk
+
+
+
 <a name="1.1.8"></a>
 ## [1.1.8](http://code.registry.wgine.com/TuyaRN/tuya-native-kit/compare/v1.1.7...v1.1.8) (2020-09-14)
 
