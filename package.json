@@ -36,7 +36,6 @@
     "react-native": "0.51.0"
   },
   "dependencies": {
-    "prop-types": "^15.6.1"
   },
   "author": [
     "fri3nds<chenglong@tuya.com>",

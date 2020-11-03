@@ -28,6 +28,7 @@ describe('TYSdk', () => {
     expect(TYSdk.device).toHaveProperty('getBleManagerState');
     expect(TYSdk.device).toHaveProperty('getBluetoothState');
     expect(TYSdk.device).toHaveProperty('getDeviceInfo');
+    expect(TYSdk.device).toHaveProperty('getDeviceState');
     expect(TYSdk.device).toHaveProperty('getDpCodeById');
     expect(TYSdk.device).toHaveProperty('getDpCodes');
     expect(TYSdk.device).toHaveProperty('getDpDataFromDevice');
@@ -140,6 +141,18 @@ describe('TYSdk', () => {
     TYSdk.device.getDeviceInfo().then(devInfo => {
       expect(devInfo).toStrictEqual(MOCK_TRANS_DEV_INFO);
     });
+  });
+
+  it('device.getDeviceInfo', () => {
+    const { NativeModules } = require('react-native');
+    const { MOCK_ORIG_DEV_INFO } = require('./utils/constant');
+    const TYSdk = require('../api').default;
+    TYSdk.device.setDeviceInfo(MOCK_ORIG_DEV_INFO);
+    TYSdk.device.getDeviceState().then(dpState => {
+      expect(dpState).toStrictEqual({ switch_1: false, countdown: 0 });
+    });
+    // 模拟触发 getDevInfo 的第二个回调参数
+    NativeModules.TYRCTPanelManager.getDevInfo.mock.calls[0][1](MOCK_ORIG_DEV_INFO);
   });
 
   it('device.initDevice', () => {
