@@ -2,7 +2,11 @@
 
 ### master
 
-主分支，1.1.0 以上版本需要 tuya-native-components 3.0.0-rc 以上才可使用
+主分支，内外部 TYSdk 完全对齐版本，tuya-native-components 4.0.0-rc 以上才可使用
+
+### develop_1.1.x
+
+1.1.0 以上版本需要 tuya-native-components 3.0.0-rc 以上才可使用
 
 ### develop_1.0.x
 
