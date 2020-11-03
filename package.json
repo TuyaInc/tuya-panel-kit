@@ -1,6 +1,6 @@
 {
   "name": "@tuya-rn/tuya-native-kit",
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0-rc.3",
   "private": false,
   "description": "tuya-react-kit, is a wrapper of native api & module",
   "main": "./src/index.js",
@@ -35,8 +35,7 @@
     "react": "16.0.0",
     "react-native": "0.51.0"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "author": [
     "fri3nds<chenglong@tuya.com>",
     "cris<wanghuan@tuya.com>",
