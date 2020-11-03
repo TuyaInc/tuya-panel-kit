@@ -141,7 +141,7 @@ const formatDevJSON = json => {
 };
 
 const formatUiConfig = devInfo => {
-  //eslint-disable-next-line
+  // eslint-disable-next-line
   let uiConfig = devInfo.uiConfig ? { ...devInfo.uiConfig } : {};
 
   Object.keys(devInfo.schema).forEach(itKey => {
@@ -179,7 +179,7 @@ const formatUiConfig = devInfo => {
         break;
 
       case 'bitmap':
-        //eslint-disable-next-line
+        // eslint-disable-next-line
         for (const v of dps.label) {
           const k = `${strKey}_${v}`.toLowerCase();
           uiConfig[key].attr[v] = k;
@@ -197,7 +197,7 @@ const formatUiConfig = devInfo => {
   const { bic, fun } = devInfo.panelConfig;
   // let bic = typeof bicN === 'string' ? Utils.parseJSON(bicN) : bicN;
 
-  //eslint-disable-next-line
+  // eslint-disable-next-line
   if (bic) {
     for (const i in bic) {
       const key = camelize(`panel_${bic[i].code}`);
@@ -349,6 +349,24 @@ if (NativeModules) {
           });
         }
       });
+
+    // 获取设备当前最新的状态（getDeviceInfo 里的 state 可能存在白屏渲染阶段时上报导致无法收集）
+    Device.getDeviceState = () =>
+      new Promise(resolve =>
+        _TYDeviceDevice.getDevInfo({}, d => {
+          if (!d || !d.dps) {
+            return resolve({});
+          }
+          const dpState = {};
+          for (const dpId in d.dps) {
+            if (Object.prototype.hasOwnProperty.call(d.dps, dpId)) {
+              const dpCode = Device.getDpCodeById(dpId);
+              dpState[dpCode] = d.dps[dpId];
+            }
+          }
+          return resolve(dpState);
+        })
+      );
 
     Device.initDevice = () =>
       Promise.all([
