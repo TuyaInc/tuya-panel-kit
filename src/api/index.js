@@ -1,3 +1,3 @@
-import TYNative from './api';
+import TYSdk from './api';
 
-export default TYNative;
+export default TYSdk;

@@ -1095,7 +1095,7 @@ if (NativeModules) {
   }
 }
 
-const TySdk = {
+const TYSdk = {
   mobile: App,
   device: Device,
   apiRequest,
@@ -1111,9 +1111,9 @@ const TySdk = {
 };
 
 // NavigatorLayout里特殊处理设置....
-TySdk.Navigator = {};
-TySdk.applyNavigator = navigator => {
-  TySdk.Navigator = navigator;
+TYSdk.Navigator = {};
+TYSdk.applyNavigator = navigator => {
+  TYSdk.Navigator = navigator;
 };
 
-export default TySdk;
+export default TYSdk;
