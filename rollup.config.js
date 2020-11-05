@@ -11,6 +11,7 @@ export default [
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
+      { file: 'src/TYNativeApi.js', format: 'es' },
     ],
     plugins: [
       nodeResolve({ preferBuiltins: true }),
