@@ -1,5 +1,4 @@
-/* eslint-disable */
-import TYSdk, { parseJSON } from '../api';
+import TYSdk from '../api';
 
 const TYNative = TYSdk.native;
 const TYMobile = TYSdk.mobile;
@@ -25,19 +24,18 @@ export default class I18N {
 
   applyStrings(strings) {
     // console.log('TYNative.lang', TYNative.lang);
-    let strLang = this.mergeLanguage(strings, TYNative.lang);
+    const strLang = this.mergeLanguage(strings, TYNative.lang);
     this.strings = this.mergeLanguage(this.strings, strLang);
     this.buildLanguage(this.language);
   }
 
   forceUpdateNetworkLang(productId) {
     return TYSdk.apiRequest('tuya.m.i18n.get', {
-      productId: productId,
+      productId,
       moduleName: 'h5',
       endId: 2,
       osId: 0,
-    })
-    .then((data) => {
+    }).then(data => {
       if (__DEV__) {
         console.info('tuya.m.i18n.get', data);
       }
@@ -45,7 +43,7 @@ export default class I18N {
         this.strings = this.mergeLanguage(this.strings, data);
         this.buildLanguage(this.language);
       }
-    })
+    });
   }
 
   mergeLanguage(L1, L2) {
@@ -53,8 +51,8 @@ export default class I18N {
     if (typeof L1 === 'undefined') return L2;
     if (typeof L2 === 'undefined') return L1;
 
-    let L0 = Object.assign({}, L1);
-    for (let k in L2) {
+    const L0 = Object.assign({}, L1);
+    for (const k in L2) {
       if (typeof L0[k] !== 'undefined') {
         Object.assign(L0[k], L2[k]);
       } else {
@@ -65,7 +63,7 @@ export default class I18N {
   }
 
   setLanguage(language) {
-    let bestLanguage = this._getBestMatchingLanguage(language, this.strings);
+    const bestLanguage = this._getBestMatchingLanguage(language, this.strings);
     if (bestLanguage === this.language) return;
     this.language = bestLanguage;
     /**
@@ -88,8 +86,8 @@ export default class I18N {
 
   buildLanguage(language) {
     if (this.strings[language]) {
-      let localizedStrings = this.strings[language];
-      for (let key in localizedStrings) {
+      const localizedStrings = this.strings[language];
+      for (const key in localizedStrings) {
         if (localizedStrings.hasOwnProperty(key)) {
           this[key] = localizedStrings[key];
         }
@@ -119,7 +117,7 @@ export default class I18N {
   formatString(str, ...values) {
     let res = str;
     for (let i = 0; i < values.length; i++) {
-      res = this._replaceAll('{' + i + '}', values[i], res);
+      res = this._replaceAll(`{${i}}`, values[i], res);
     }
     return res;
   }
@@ -127,14 +125,14 @@ export default class I18N {
   formatValue(key, ...values) {
     let res = this[key];
     for (let i = 0; i < values.length; i++) {
-      res = this._replaceAll('{' + i + '}', values[i], res);
+      res = this._replaceAll(`{${i}}`, values[i], res);
     }
     return res;
   }
 
   _replaceAll(find, replace, str) {
     find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-    if (!!!str) return '';
+    if (!str) return '';
     return str.replace(new RegExp(find, 'g'), replace);
   }
 
@@ -143,7 +141,7 @@ export default class I18N {
     if (typeof value === 'undefined') {
       key = `dp_${code}`.toLowerCase();
     } else if (typeof value === 'boolean') {
-      let valStr = !!value ? 'on' : 'off';
+      const valStr = value ? 'on' : 'off';
       key = `dp_${code}_${valStr}`.toLowerCase();
     } else {
       key = `dp_${code}_${value}`.toLowerCase();
@@ -152,8 +150,8 @@ export default class I18N {
   }
 
   getDpName(code, defaultName) {
-    let key = `dp_${code}`.toLowerCase();
-    return typeof this[key] !== 'undefined' ? this[key] : defaultName ? defaultName : key;
+    const key = `dp_${code}`.toLowerCase();
+    return typeof this[key] !== 'undefined' ? this[key] : defaultName || key;
   }
 
   getDpsLang(key) {
@@ -162,7 +160,7 @@ export default class I18N {
       if (typeof key.strKey === 'string') {
         strs = typeof this[key.strKey] !== 'undefined' ? this[key.strKey] : key.strKey;
       } else {
-        for (let i in key) {
+        for (const i in key) {
           strs[key[i]] = typeof this[key[i]] !== 'undefined' ? this[key[i]] : key[i];
         }
       }
@@ -176,8 +174,8 @@ export default class I18N {
     return typeof this[key] !== 'undefined'
       ? this[key]
       : typeof defaultString !== 'undefined'
-      ? defaultString
-      : `I18N@${key}`;
+        ? defaultString
+        : `I18N@${key}`;
   }
 
   /**
