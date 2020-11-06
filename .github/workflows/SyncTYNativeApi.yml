@@ -1,5 +1,5 @@
 # Triggered when code is pushed to any branch in a repository
-name: Lint Commit Messages
+name: Sync TYNativeApi
 on: 
   push:
     branches:
