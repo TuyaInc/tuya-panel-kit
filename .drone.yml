@@ -1,0 +1,27 @@
+kind: pipeline
+type: docker
+name: Sync TYNativeApi
+
+node:
+  type: tuya-ci
+
+volumes:
+  - name: node-cache
+    host:
+      path: /home/docker/workspace/cache/.node_cache
+
+steps:
+  - name: synchronize
+    image: registry.shdocker.tuya-inc.top/fe-base/compile/node:14.4.0
+    volumes:
+      - name: node-cache
+        path: /usr/local/share/.cache/yarn
+    commands:
+      - git config --global user.name "tuyafe"
+      - git config --global user.email "tuyafe@tuya.com"
+      - bash sync.sh
+    when:
+      branch:
+        - TYNativeApi
+      event:
+        - push

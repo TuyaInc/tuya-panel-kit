@@ -1,9 +1,0 @@
-stages:
-  - sync
-
-Sync TYNativeApi:
-  stage: sync
-  only:
-    - TYNativeApi
-  script:
-    - bash sync.sh
