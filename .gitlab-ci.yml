@@ -1,7 +1,9 @@
 stages:
   - sync
 
-job1:
+Sync TYNativeApi:
   stage: sync
+  only:
+    - TYNativeApi
   script:
     - bash sync.sh
