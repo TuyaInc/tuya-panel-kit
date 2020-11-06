@@ -1,0 +1,7 @@
+stages:
+  - sync
+
+job1:
+  stage: sync
+  script:
+    - bash sync.sh
