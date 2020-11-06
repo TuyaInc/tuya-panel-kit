@@ -19,6 +19,7 @@ steps:
     commands:
       - git config --global user.name "tuyafe"
       - git config --global user.email "tuyafe@tuya.com"
+      - git fetch origin
       - git checkout origin/master
       - git checkout origin/TYNativeApi
       - git branch
