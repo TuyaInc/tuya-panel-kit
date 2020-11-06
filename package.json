@@ -7,7 +7,6 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/index.js",
   "scripts": {
-    "sync": "git checkout github/develop_2.0",
     "build": "rimraf dist/* && rollup -c",
     "dev": "rollup -c -w",
     "test": "jest",
