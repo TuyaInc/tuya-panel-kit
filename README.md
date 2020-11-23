@@ -20,7 +20,7 @@
 </p>
 </center>
 
-## 注意：当前仓库将会废弃，新的涂鸦 Github 仓库地址参见：https://github.com/tuya/tuya-panel-kit
+## 注意：当前仓库将会废弃，新的涂鸦 Github 仓库地址参见：[tuya/tuya-panel-kit](https://github.com/tuya/tuya-panel-kit)
 
 ## 特性
 
