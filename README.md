@@ -20,6 +20,8 @@
 </p>
 </center>
 
+## 注意：当前仓库将会废弃，新的涂鸦 Github 仓库地址参见：https://github.com/tuya/tuya-panel-sdk
+
 ## 特性
 
 - 30+ 开箱即用的高质量组件
