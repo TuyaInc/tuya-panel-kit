@@ -25,7 +25,7 @@
     "prop-types": "^15.6.1",
     "react": "16.8.3",
     "react-addons-shallow-compare": "^15.6.2",
-    "react-native": "0.59.10",
+    "react-native": "0.62.3",
     "react-native-deprecated-custom-components": "git+https://github.com/facebookarchive/react-native-custom-components.git#83c4fa19ccc9b6cd48ff80e457c493332819b486",
     "react-native-gesture-handler": "1.8.0",
     "react-native-reanimated": "1.13.0",
